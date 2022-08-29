@@ -11,7 +11,7 @@ stmt       =  expr ";"
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
 expr       = "!"? assign
-assign     = andor ("=" assign)?
+assign     = andor ("=" andor)?
 andor      = equality ("&&" equality | "||" equality)*
 equality   = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
