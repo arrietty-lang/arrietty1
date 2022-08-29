@@ -25,9 +25,9 @@ callArgs   = literal ("," callArgs)?
 funcParams = ident ("," funcParams)?
 
 
-literal = ident
+literal = "(" expr ")"
+        = ident
         | ident "(" callArgs? ")"
-        | "(" expr ")"
         | float
         | int
         | string
