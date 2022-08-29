@@ -21,8 +21,8 @@ unary      = ("+" | "-")? primary
 primary    = literal
 
 
-callArgs   = literal ("," callArgs)?
-funcParams = ident ("," funcParams)?
+callArgs   = literal ("," literal)*
+funcParams = ident ("," ident)*
 
 
 literal = "(" expr ")"
