@@ -10,13 +10,13 @@ stmt       =  expr ";"
            | "if" "(" expr ")" block ("else" block)?
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
-expr       = assign
+expr       = "!"? assign
 assign     = andor ("=" assign)?
 andor      = equality ("&&" equality | "||" equality)*
 equality   = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add        = mul ("+" mul | "-" mul)*
-mul        = unary ("*" unary | "/" unary)*
+mul        = unary ("*" unary | "/" unary | "%" unary)*
 unary      = ("+" | "-")? primary
 primary    = literal
 
