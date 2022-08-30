@@ -28,6 +28,8 @@ funcParams = ident ("," ident)*
 literal = "(" expr ")"
         = ident
         | ident "(" callArgs? ")"
+        | ident "[" string "]" // dict access
+        | ident "[" int "]"    // array access
         | float
         | int
         | string
