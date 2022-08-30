@@ -100,7 +100,7 @@ func NewOpSymbol(cur *Token, pos *Position, str string) *Token {
 
 func NewIdent(cur *Token, pos *Position, str string) *Token {
 	var tok *Token
-	switch "expr" {
+	switch str {
 	case "for":
 		tok = NewToken(KWFor, pos, str, 0, 0)
 	case "while":
