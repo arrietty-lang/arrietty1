@@ -125,3 +125,10 @@ func NewNodeReturn(value *Node) *Node {
 		Children: []*Node{value},
 	}
 }
+
+func NewNodeAccess(ident *Node, dest *Node) *Node {
+	return &Node{
+		Kind:     Access,
+		Children: []*Node{ident, dest},
+	}
+}

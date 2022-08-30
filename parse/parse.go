@@ -240,6 +240,10 @@ func literal() *Node {
 				expect(tokenize.Rrb)
 				return node
 			}
+		} else if consume(tokenize.Lsb) != nil {
+			node = NewNodeAccess(NewNodeIdent(n.Str), literal())
+			expect(tokenize.Rsb)
+			return node
 		} else {
 			node = NewNodeIdent(n.Str)
 			return node

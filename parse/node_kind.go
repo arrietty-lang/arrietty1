@@ -45,6 +45,8 @@ const (
 	Args
 	Params
 
+	Access
+
 	//Comment
 	//White
 	//Newline

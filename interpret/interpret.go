@@ -47,6 +47,22 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 			return nil, err
 		}
 		return f.Exec(scope, args.Children)
+	case parse.Access:
+		id := node.Children[0]
+		dest := node.Children[1]
+		d, err := eval(scope, dest)
+		if err != nil {
+			return nil, err
+		}
+		obj, err := Load(scope, id.Str)
+		if err != nil {
+			return nil, err
+		}
+		if obj.Literal.Kind == Dict {
+			return obj.KVS[d.Str], nil
+		} else {
+			return obj.Items[d.NumInt], nil
+		}
 	}
 	return nil, nil
 }
