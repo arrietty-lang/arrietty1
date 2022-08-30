@@ -39,6 +39,14 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return nil, nil
 	case parse.Return:
 		return eval(scope, node.Children[0])
+	case parse.Call:
+		id := node.Children[0]
+		args := node.Children[1]
+		f, err := Load(globalStorage, id.Str)
+		if err != nil {
+			return nil, err
+		}
+		return f.Exec(scope, args.Children)
 	}
 	return nil, nil
 }
@@ -59,5 +67,5 @@ func Interpret(nodes []*parse.Node) (*Object, error) {
 		return nil, fmt.Errorf("need main")
 	}
 
-	return main.Exec(nil)
+	return main.Exec(globalStorage, nil)
 }
