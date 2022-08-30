@@ -219,7 +219,16 @@ func unary() *Node {
 }
 
 func primary() *Node {
-	return literal()
+	return access()
+}
+
+func access() *Node {
+	node := literal()
+	if consume(tokenize.Lsb) != nil {
+		node = NewNodeAccess(node, expr())
+		expect(tokenize.Rsb)
+	}
+	return node
 }
 
 func literal() *Node {
@@ -280,9 +289,9 @@ func immediate() *Node {
 }
 
 func callArgs() *Node {
-	nodes := []*Node{literal()}
+	nodes := []*Node{primary()}
 	for consume(tokenize.Comma) != nil {
-		nodes = append(nodes, literal())
+		nodes = append(nodes, primary())
 	}
 	return NewNodeWithChildren(Args, nodes)
 }
@@ -298,7 +307,7 @@ func funcParams() *Node {
 func array() *Node {
 	var nodes []*Node
 	for consume(tokenize.Rsb) == nil {
-		nodes = append(nodes, literal())
+		nodes = append(nodes, primary())
 		if consume(tokenize.Comma) == nil {
 			break
 		}
@@ -320,7 +329,7 @@ func dict() *Node {
 func kv() *Node {
 	key := NewNodeIdent(consume(tokenize.String).Str)
 	expect(tokenize.Colon)
-	value := literal()
+	value := primary()
 	return NewNodeKV(key, value)
 }
 

@@ -54,7 +54,7 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		if err != nil {
 			return nil, err
 		}
-		obj, err := Load(scope, id.Str)
+		obj, err := eval(scope, id)
 		if err != nil {
 			return nil, err
 		}

@@ -27,6 +27,34 @@ func TestInterpret(t *testing.T) {
 					KVS:      nil,
 				}},
 		},
+		{
+			"re",
+			"retX(x) { return x; } main() { return retX(2); }",
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Int,
+					Str:      "",
+					NumFloat: 0,
+					NumInt:   2,
+					Items:    nil,
+					KVS:      nil,
+				}},
+		},
+		{
+			"array",
+			"list() { return [10, 20, 30, 40]; } main() { return list()[2]; }",
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Int,
+					Str:      "",
+					NumFloat: 0,
+					NumInt:   30,
+					Items:    nil,
+					KVS:      nil,
+				}},
+		},
 	}
 
 	for _, tt := range tests {
