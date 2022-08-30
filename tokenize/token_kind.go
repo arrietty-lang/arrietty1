@@ -10,18 +10,18 @@ const (
 	White
 	NewLine
 
-	Ident
+	Ident // 5
 	Float
 	Int
 	String
 	Raw
-	True
+	True // 10
 	False
 	Null
 
 	symbolsBegin
 	Lrb   // (
-	Rrb   // )
+	Rrb   // ) 15
 	Lsb   // [
 	Rsb   // ]
 	Lcb   // {

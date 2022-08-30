@@ -55,6 +55,66 @@ func TestInterpret(t *testing.T) {
 					KVS:      nil,
 				}},
 		},
+		{
+			"assign ident",
+			"main() { i = 4004; return i; }",
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Int,
+					Str:      "",
+					NumFloat: 0,
+					NumInt:   4004,
+					Items:    nil,
+					KVS:      nil,
+				},
+			},
+		},
+		{
+			"assign dict",
+			`main() { d = {"k1": 300}; d["k1"] = "v1"; return d["k1"]; }`,
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     String,
+					Str:      "v1",
+					NumFloat: 0,
+					NumInt:   0,
+					Items:    nil,
+					KVS:      nil,
+				},
+			},
+		},
+		{
+			"assign array",
+			`main() { f = 0.1; li = [0, f, "hello"]; return li[1]; }`,
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Float,
+					Str:      "",
+					NumFloat: 0.1,
+					NumInt:   0,
+					Items:    nil,
+					KVS:      nil,
+				},
+			},
+		},
+		{
+			"assign array array",
+			`retX(x){return x;} main() { li = [0, 0, "hello", [{"k2": [retX(6000)]}]]; return li[3][0]["k2"][0]; }`,
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Int,
+					Str:      "",
+					NumFloat: 0,
+					NumInt:   6000,
+					Items:    nil,
+					KVS:      nil,
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {

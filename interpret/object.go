@@ -113,10 +113,10 @@ func NewRaw(s string) *Object {
 	}
 }
 
-func NewArray(items []*parse.Node) (*Object, error) {
+func NewArray(scope *Storage, items []*parse.Node) (*Object, error) {
 	var objs []*Object
 	for _, item := range items {
-		o, err := eval(globalStorage, item)
+		o, err := eval(scope, item)
 		if err != nil {
 			return nil, err
 		}
@@ -133,11 +133,11 @@ func NewArray(items []*parse.Node) (*Object, error) {
 	}, nil
 }
 
-func NewDict(kv []*parse.Node) (*Object, error) {
-	var m map[string]*Object
+func NewDict(scope *Storage, kv []*parse.Node) (*Object, error) {
+	m := map[string]*Object{}
 
 	for _, k := range kv {
-		valueObj, err := eval(globalStorage, k.Rhs)
+		valueObj, err := eval(scope, k.Rhs)
 		if err != nil {
 			return nil, err
 		}

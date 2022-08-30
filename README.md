@@ -19,7 +19,7 @@ add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary | "%" unary)*
 unary      = ("+" | "-")? primary
 primary    = access
-access     = literal ("[" expr "]")?
+access     = literal ("[" expr "]")*
 
 callArgs   = primary ("," primary)*
 funcParams = ident ("," ident)*

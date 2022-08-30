@@ -224,11 +224,14 @@ func primary() *Node {
 
 func access() *Node {
 	node := literal()
-	if consume(tokenize.Lsb) != nil {
-		node = NewNodeAccess(node, expr())
-		expect(tokenize.Rsb)
+	for {
+		if consume(tokenize.Lsb) != nil {
+			node = NewNodeAccess(node, expr())
+			expect(tokenize.Rsb)
+		} else {
+			return node
+		}
 	}
-	return node
 }
 
 func literal() *Node {
@@ -257,11 +260,11 @@ func literal() *Node {
 
 	if consume(tokenize.Lsb) != nil {
 		node = array()
-		expect(tokenize.Rsb)
+		//expect(tokenize.Rsb)
 		return node
 	} else if consume(tokenize.Lcb) != nil {
 		node = dict()
-		expect(tokenize.Rcb)
+		//expect(tokenize.Rcb)
 		return node
 	}
 
@@ -309,6 +312,7 @@ func array() *Node {
 	for consume(tokenize.Rsb) == nil {
 		nodes = append(nodes, primary())
 		if consume(tokenize.Comma) == nil {
+			expect(tokenize.Rsb)
 			break
 		}
 	}
@@ -320,6 +324,7 @@ func dict() *Node {
 	for consume(tokenize.Rcb) == nil {
 		nodes = append(nodes, kv())
 		if consume(tokenize.Comma) == nil {
+			expect(tokenize.Rcb)
 			break
 		}
 	}
@@ -327,7 +332,7 @@ func dict() *Node {
 }
 
 func kv() *Node {
-	key := NewNodeIdent(consume(tokenize.String).Str)
+	key := NewNodeImmediate(consume(tokenize.String))
 	expect(tokenize.Colon)
 	value := primary()
 	return NewNodeKV(key, value)
