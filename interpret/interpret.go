@@ -67,15 +67,33 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 	return nil, nil
 }
 
+func Import(nodes []*parse.Node) error {
+	for _, node := range nodes {
+		_, err := eval(globalStorage, node)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func Run(fName string, args []*parse.Node) (*Object, error) {
+	f, err := Load(globalStorage, fName)
+	if err != nil {
+		return nil, err
+	}
+	return f.Exec(globalStorage, args)
+}
+
 func Interpret(nodes []*parse.Node) (*Object, error) {
 	for _, node := range nodes {
-		v, err := eval(globalStorage, node)
+		_, err := eval(globalStorage, node)
 		if err != nil {
 			return nil, err
 		}
-		if v != nil {
-			fmt.Println(v.String())
-		}
+		//if v != nil {
+		//	fmt.Println(v.String())
+		//}
 	}
 
 	main, err := Load(globalStorage, "main")
