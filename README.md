@@ -18,17 +18,16 @@ relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary | "%" unary)*
 unary      = ("+" | "-")? primary
-primary    = literal
+primary    = access
+access     = literal ("[" expr "]")?
 
-
-callArgs   = literal ("," literal)*
+callArgs   = primary ("," primary)*
 funcParams = ident ("," ident)*
 
 
 literal = "(" expr ")"
         = ident
         | ident "(" callArgs? ")"
-        | ident "[" literal "]"
         | float
         | int
         | string
@@ -38,12 +37,12 @@ literal = "(" expr ")"
         | bool
         | null
 
-array = "[" literal? "]"
-      | "[" literal ("," literal)* "]"
+array = "[" primary? "]"
+      | "[" primary ("," primary)* "]"
 
 dict  = "{" kv? "}"
       | "{" kv ("," kv)* "}"
-kv    = string ":" literal
+kv    = string ":" primary
 
 ident   = [a-zA-Z_][a-zA-Z0-9_]*
 float   = [0-9]+[0-9.][0-9]+
