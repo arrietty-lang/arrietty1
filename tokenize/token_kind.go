@@ -26,48 +26,48 @@ const (
 	Rsb   // ]
 	Lcb   // {
 	Rcb   // }
-	Dot   // .
+	Dot   // . 20
 	Comma // ,
 	Colon // :
 	Semi  // ;
 	symbolsEnd
 
-	operatorsBegin
-	Add // +
-	Sub // -
-	Mul // *
-	Div // /
-	Mod // %
+	operatorsBegin // 25
+	Add            // +
+	Sub            // -
+	Mul            // *
+	Div            // /
+	Mod            // % 30
 
 	Eq // ==
 	Ne // !=
 	Gt // >
 	Lt // <
-	Ge // >=
+	Ge // >= 35
 	Le // <=
 
 	Assign    // =
 	AddAssign // +=
 	SubAssign // -=
-	MulAssign // *=
+	MulAssign // *= 40
 	DivAssign // /=
 	ModAssign // %=
 
 	And // &&
 	Or  // ||
-	Not // !
+	Not // ! 45
 	operatorsEnd
 
 	keywordBegin // 予約後
 	KWFor
 	KWWhile
-	KWIf
+	KWIf // 50
 	KWElse
 	KWReturn
 
 	KWDict
 	KWFloat
-	KWInt
+	KWInt // 55
 	KWString
 	KWBool
 	KWVoid
