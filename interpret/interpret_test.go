@@ -160,6 +160,68 @@ func TestInterpret(t *testing.T) {
 				},
 			},
 		},
+		// eq
+		{
+			"same string",
+			`main() { s = "hello"; return "hello" == s; }`,
+			NewTrue(),
+		},
+		{
+			"not same string",
+			`main() { s = "hello"; return "hello11" == s; }`,
+			NewFalse(),
+		},
+		{
+			"same int",
+			`main() {i = 1; return 1 == i;}`,
+			NewTrue(),
+		},
+		{
+			"not same int",
+			`main() {i = 1; return 99 == i;}`,
+			NewFalse(),
+		},
+		{
+			"same float",
+			`main() {f = 1.0; return 1.0 == f; }`,
+			NewTrue(),
+		},
+		{
+			"not same float",
+			`main() {f = 1.0; return 1.1 == f; }`,
+			NewFalse(),
+		},
+		// ne
+		{
+			"same string",
+			`main() { s = "hello"; return "hello" != s; }`,
+			NewFalse(),
+		},
+		{
+			"not same string",
+			`main() { s = "hello"; return "hello11" != s; }`,
+			NewTrue(),
+		},
+		{
+			"same int",
+			`main() {i = 1; return 1 != i;}`,
+			NewFalse(),
+		},
+		{
+			"not same int",
+			`main() {i = 1; return 99 != i;}`,
+			NewTrue(),
+		},
+		{
+			"same float",
+			`main() {f = 1.0; return 1.0 != f; }`,
+			NewFalse(),
+		},
+		{
+			"not same float",
+			`main() {f = 1.0; return 1.1 != f; }`,
+			NewTrue(),
+		},
 	}
 
 	for _, tt := range tests {
