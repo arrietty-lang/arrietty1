@@ -26,7 +26,7 @@ funcParams = ident ("," ident)*
 
 
 literal = "(" expr ")"
-        = ident
+        | ident
         | ident "(" callArgs? ")"
         | float
         | int
@@ -57,3 +57,37 @@ comment = "//" any-character*
 white   = " " | "\t"
 newline = "\n"
 ```
+
+### Node implementation
+- [x] Function
+- [x] Block
+- [x] Return 
+- [ ] If
+- [ ] IfElse
+- [ ] While
+- [ ] For
+- [ ] Not
+- [x] Assign
+- [ ] And
+- [ ] Or
+- [ ] Eq
+- [ ] Ne
+- [ ] Lt
+- [ ] Le
+- [ ] Gt
+- [ ] Ge
+- [x] Add
+- [x] Sub
+- [x] Mul
+- [x] Div
+- [x] Mod
+- [x] Ident
+- [x] Call
+- [x] Float, Int, String
+- [x] Array, Dict, KV
+- [ ] Raw
+- [x] True, False, Null
+- [x] Args
+- [x] Params
+- [x] Access(Dict, Array)
+- [ ] Access(String)
