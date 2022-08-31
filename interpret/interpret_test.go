@@ -265,6 +265,55 @@ func TestInterpret(t *testing.T) {
 			`main() { t = 5.1 >= 5.1; t2 = 5.1 >= 1.1; return t == t2; }`,
 			NewTrue(),
 		},
+		// not
+		{
+			"not",
+			`main() {return !true;}`,
+			NewFalse(),
+		},
+		{
+			"not",
+			`main() {return !false;}`,
+			NewTrue(),
+		},
+		// or
+		{
+			"or",
+			`main() {return true || true;}`,
+			NewTrue(),
+		},
+		{
+			"or",
+			`main() {return true || false;}`,
+			NewTrue(),
+		},
+		{
+			"or",
+			`main() {return false || false;}`,
+			NewFalse(),
+		},
+		// and
+		{
+			"and",
+			`main() {return true && true;}`,
+			NewTrue(),
+		},
+		{
+			"and",
+			`main() {return true && false;}`,
+			NewFalse(),
+		},
+		{
+			"and",
+			`main() {return false && false;}`,
+			NewFalse(),
+		},
+		// not and or
+		{
+			"not and or",
+			`main() { f = !false && false; t = !(!true || true); return !(f && t); }`,
+			NewTrue(),
+		},
 	}
 
 	for _, tt := range tests {

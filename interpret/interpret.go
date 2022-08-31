@@ -56,6 +56,12 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return gt(scope, node)
 	case parse.Ge:
 		return ge(scope, node)
+	case parse.And:
+		return and(scope, node)
+	case parse.Or:
+		return or(scope, node)
+	case parse.Not:
+		return not(scope, node)
 	case parse.Assign:
 		// 保存する値
 		rhs, err := eval(scope, node.Rhs)
