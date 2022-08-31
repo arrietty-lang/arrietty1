@@ -70,8 +70,8 @@ newline = "\n"
 - [x] Assign
 - [ ] And
 - [ ] Or
-- [ ] Eq
-- [ ] Ne
+- [x] Eq
+- [x] Ne
 - [ ] Lt
 - [ ] Le
 - [ ] Gt
