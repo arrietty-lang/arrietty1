@@ -21,7 +21,7 @@ unary      = ("+" | "-")? primary
 primary    = access
 access     = literal ("[" expr "]")*
 
-callArgs   = primary ("," primary)*
+callArgs   = expr ("," expr)*
 funcParams = ident ("," ident)*
 
 

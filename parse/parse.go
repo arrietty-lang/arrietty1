@@ -292,9 +292,9 @@ func immediate() *Node {
 }
 
 func callArgs() *Node {
-	nodes := []*Node{primary()}
+	nodes := []*Node{expr()}
 	for consume(tokenize.Comma) != nil {
-		nodes = append(nodes, primary())
+		nodes = append(nodes, expr())
 	}
 	return NewNodeWithChildren(Args, nodes)
 }
