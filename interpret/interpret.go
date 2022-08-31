@@ -34,13 +34,14 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return NewFalse(), nil
 	case parse.Null:
 		return NewNull(), nil
+	case parse.Add:
+		return add(scope, node)
 	case parse.Assign:
 		// 保存する値
 		rhs, err := eval(scope, node.Rhs)
 		if err != nil {
 			return nil, err
 		}
-
 		if node.Lhs.Kind == parse.Access {
 			// 格納先本体の解決
 			ident := node.Lhs.Children[0]
@@ -54,8 +55,6 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 			if err != nil {
 				return nil, err
 			}
-			//
-
 			// dict
 			if identObj.Literal.Kind == Dict {
 				identObj.KVS[indexObj.Str] = rhs
@@ -72,12 +71,6 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 			}
 			return nil, nil
 		}
-		//Store(scope, )
-		//lhs, err := eval(scope, node.Lhs)
-		//if err != nil {
-		//	return nil, err
-		//}
-
 	case parse.Function:
 		id := node.Children[0]
 		params := node.Children[1]
