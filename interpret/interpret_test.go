@@ -145,6 +145,21 @@ func TestInterpret(t *testing.T) {
 				},
 			},
 		},
+		{
+			"add-sub-mul-div-mod assign array array",
+			`retX(x){return x;} main() { li = [0, 0, "hello", [{"k2": [retX(9%2+1-(3*3/(4-3)))]}]]; return li[3][0]["k2"][0] + 20.0; }`,
+			&Object{
+				Kind: ObjLiteral,
+				Literal: &Literal{
+					Kind:     Float,
+					Str:      "",
+					NumFloat: 13,
+					NumInt:   0,
+					Items:    nil,
+					KVS:      nil,
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
