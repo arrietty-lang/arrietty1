@@ -10,14 +10,14 @@ stmt       =  expr ";"
            | "if" "(" expr ")" block ("else" block)?
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
-expr       = "!"? assign
+expr       = assign
 assign     = andor ("=" andor)?
 andor      = equality ("&&" equality | "||" equality)*
 equality   = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
 add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary | "%" unary)*
-unary      = ("+" | "-")? primary
+unary      = ("+" | "-" | "!")? primary
 primary    = access
 access     = literal ("[" expr "]")*
 
@@ -66,10 +66,10 @@ newline = "\n"
 - [ ] IfElse
 - [ ] While
 - [ ] For
-- [ ] Not
 - [x] Assign
-- [ ] And
-- [ ] Or
+- [x] Not
+- [x] And
+- [x] Or
 - [x] Eq
 - [x] Ne
 - [x] Lt

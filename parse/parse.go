@@ -117,13 +117,7 @@ func stmt() *Node {
 }
 
 func expr() *Node {
-	var node *Node
-	if consume(tokenize.Not) != nil {
-		node = NewNode(Not, assign(), nil)
-	} else {
-		node = assign()
-	}
-	return node
+	return assign()
 }
 
 func assign() *Node {
@@ -212,6 +206,8 @@ func unary() *Node {
 		node = primary()
 	} else if consume(tokenize.Sub) != nil {
 		node = NewNode(Sub, NewNodeImmediate(tokenize.NewInt(nil, nil, 0)), primary())
+	} else if consume(tokenize.Not) != nil {
+		node = NewNode(Not, primary(), nil)
 	} else {
 		node = primary()
 	}
