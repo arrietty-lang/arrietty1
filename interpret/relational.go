@@ -55,6 +55,13 @@ func eq(scope *Storage, node *parse.Node) (*Object, error) {
 		default:
 			return NewFalse(), nil
 		}
+	} else {
+		if lhsObj.Literal.Kind == True && rhsObj.Literal.Kind == False {
+			return NewFalse(), nil
+		}
+		if lhsObj.Literal.Kind == False && rhsObj.Literal.Kind == True {
+			return NewFalse(), nil
+		}
 	}
 	return nil, fmt.Errorf("type miss match: %s == %s",
 		lhsObj.Literal.Kind.String(),
@@ -97,7 +104,12 @@ func ne(scope *Storage, node *parse.Node) (*Object, error) {
 				return NewFalse(), nil
 			}
 			return NewTrue(), nil
-		default:
+		}
+	} else {
+		if lhsObj.Literal.Kind == True && rhsObj.Literal.Kind == False {
+			return NewTrue(), nil
+		}
+		if lhsObj.Literal.Kind == False && rhsObj.Literal.Kind == True {
 			return NewTrue(), nil
 		}
 	}
