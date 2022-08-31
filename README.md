@@ -72,10 +72,10 @@ newline = "\n"
 - [ ] Or
 - [x] Eq
 - [x] Ne
-- [ ] Lt
-- [ ] Le
-- [ ] Gt
-- [ ] Ge
+- [x] Lt
+- [x] Le
+- [x] Gt
+- [x] Ge
 - [x] Add
 - [x] Sub
 - [x] Mul

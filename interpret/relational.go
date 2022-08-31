@@ -117,3 +117,156 @@ func ne(scope *Storage, node *parse.Node) (*Object, error) {
 		lhsObj.Literal.Kind.String(),
 		rhsObj.Literal.Kind.String())
 }
+
+func isSupportedByLtLeGtGe(kind LiteralKind) bool {
+	for _, k := range []LiteralKind{Float, Int} {
+		if k == kind {
+			return true
+		}
+	}
+	return false
+}
+
+func lt(scope *Storage, node *parse.Node) (*Object, error) {
+	lhsObj, err := eval(scope, node.Lhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(lhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by lt: %s", lhsObj.Literal.Kind.String())
+	}
+
+	rhsObj, err := eval(scope, node.Rhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(rhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by lt: %s", rhsObj.Literal.Kind.String())
+	}
+
+	if lhsObj.Literal.Kind == rhsObj.Literal.Kind {
+		switch lhsObj.Literal.Kind {
+		case Float:
+			if lhsObj.Literal.NumFloat < rhsObj.Literal.NumFloat {
+				return NewTrue(), nil
+			}
+		case Int:
+			if lhsObj.Literal.NumInt < rhsObj.Literal.NumInt {
+				return NewTrue(), nil
+			}
+		}
+		return NewFalse(), nil
+	}
+
+	return nil, fmt.Errorf("type miss match: %s < %s",
+		lhsObj.Literal.Kind.String(),
+		rhsObj.Literal.Kind.String())
+}
+
+func le(scope *Storage, node *parse.Node) (*Object, error) {
+	lhsObj, err := eval(scope, node.Lhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(lhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by le: %s", lhsObj.Literal.Kind.String())
+	}
+
+	rhsObj, err := eval(scope, node.Rhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(rhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by le: %s", rhsObj.Literal.Kind.String())
+	}
+
+	if lhsObj.Literal.Kind == rhsObj.Literal.Kind {
+		switch lhsObj.Literal.Kind {
+		case Float:
+			if lhsObj.Literal.NumFloat <= rhsObj.Literal.NumFloat {
+				return NewTrue(), nil
+			}
+		case Int:
+			if lhsObj.Literal.NumInt <= rhsObj.Literal.NumInt {
+				return NewTrue(), nil
+			}
+		}
+		return NewFalse(), nil
+	}
+
+	return nil, fmt.Errorf("type miss match: %s <= %s",
+		lhsObj.Literal.Kind.String(),
+		rhsObj.Literal.Kind.String())
+}
+
+func gt(scope *Storage, node *parse.Node) (*Object, error) {
+	lhsObj, err := eval(scope, node.Lhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(lhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by gt: %s", lhsObj.Literal.Kind.String())
+	}
+
+	rhsObj, err := eval(scope, node.Rhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(rhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by gt: %s", rhsObj.Literal.Kind.String())
+	}
+
+	if lhsObj.Literal.Kind == rhsObj.Literal.Kind {
+		switch lhsObj.Literal.Kind {
+		case Float:
+			if lhsObj.Literal.NumFloat > rhsObj.Literal.NumFloat {
+				return NewTrue(), nil
+			}
+		case Int:
+			if lhsObj.Literal.NumInt > rhsObj.Literal.NumInt {
+				return NewTrue(), nil
+			}
+		}
+		return NewFalse(), nil
+	}
+
+	return nil, fmt.Errorf("type miss match: %s > %s",
+		lhsObj.Literal.Kind.String(),
+		rhsObj.Literal.Kind.String())
+}
+
+func ge(scope *Storage, node *parse.Node) (*Object, error) {
+	lhsObj, err := eval(scope, node.Lhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(lhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by ge: %s", lhsObj.Literal.Kind.String())
+	}
+
+	rhsObj, err := eval(scope, node.Rhs)
+	if err != nil {
+		return nil, err
+	}
+	if !isSupportedByLtLeGtGe(rhsObj.Literal.Kind) {
+		return nil, fmt.Errorf("unsupported by ge: %s", rhsObj.Literal.Kind.String())
+	}
+
+	if lhsObj.Literal.Kind == rhsObj.Literal.Kind {
+		switch lhsObj.Literal.Kind {
+		case Float:
+			if lhsObj.Literal.NumFloat >= rhsObj.Literal.NumFloat {
+				return NewTrue(), nil
+			}
+		case Int:
+			if lhsObj.Literal.NumInt >= rhsObj.Literal.NumInt {
+				return NewTrue(), nil
+			}
+		}
+		return NewFalse(), nil
+	}
+
+	return nil, fmt.Errorf("type miss match: %s >= %s",
+		lhsObj.Literal.Kind.String(),
+		rhsObj.Literal.Kind.String())
+}

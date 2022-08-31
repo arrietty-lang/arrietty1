@@ -222,6 +222,49 @@ func TestInterpret(t *testing.T) {
 			`main() {f = 1.0; return 1.1 != f; }`,
 			NewTrue(),
 		},
+		// lt
+		{
+			"lt int",
+			`main() { t = 1 < 5; f = 5 < 1; return t != f; }`,
+			NewTrue(),
+		},
+		{
+			"lt float",
+			`main() { t = 1.1 < 5.1; f = 5.1 < 1.1; return t != f; }`,
+			NewTrue(),
+		},
+		// le
+		{
+			"le int",
+			`main() { t = 5 <= 5; f = 5 <= 1; return t != f; }`,
+			NewTrue(),
+		},
+		{
+			"le float",
+			`main() { t = 5.1 <= 5.1; f = 5.1 <= 1.1; return t != f; }`,
+			NewTrue(),
+		},
+		// gt
+		{
+			"gt int",
+			`main() { f = 1 > 5; t = 5 > 1; return f != t; }`,
+			NewTrue(),
+		},
+		{
+			"gt float",
+			`main() { f = 1.1 > 5.1; t = 5.1 > 1.1; return f != t; }`,
+			NewTrue(),
+		},
+		{
+			"ge int",
+			`main() { t = 5 >= 5; t2 = 5 >= 1; return t == t2; }`,
+			NewTrue(),
+		},
+		{
+			"ge float",
+			`main() { t = 5.1 >= 5.1; t2 = 5.1 >= 1.1; return t == t2; }`,
+			NewTrue(),
+		},
 	}
 
 	for _, tt := range tests {

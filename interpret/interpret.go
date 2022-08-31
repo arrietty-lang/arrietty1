@@ -48,6 +48,14 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return eq(scope, node)
 	case parse.Ne:
 		return ne(scope, node)
+	case parse.Lt:
+		return lt(scope, node)
+	case parse.Le:
+		return le(scope, node)
+	case parse.Gt:
+		return gt(scope, node)
+	case parse.Ge:
+		return ge(scope, node)
 	case parse.Assign:
 		// 保存する値
 		rhs, err := eval(scope, node.Rhs)
