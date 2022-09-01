@@ -16,303 +16,216 @@ func TestInterpret(t *testing.T) {
 		{
 			"1",
 			"main() { return 1; }",
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Int,
-					Str:      "",
-					NumFloat: 0,
-					NumInt:   1,
-					Items:    nil,
-					KVS:      nil,
-				}},
+			NewInt(1).AsRet(),
 		},
 		{
 			"re",
 			"retX(x) { return x; } main() { return retX(2); }",
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Int,
-					Str:      "",
-					NumFloat: 0,
-					NumInt:   2,
-					Items:    nil,
-					KVS:      nil,
-				}},
+			NewInt(2).AsRet(),
 		},
 		{
 			"array",
 			"list() { return [10, 20, 30, 40]; } main() { return list()[2]; }",
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Int,
-					Str:      "",
-					NumFloat: 0,
-					NumInt:   30,
-					Items:    nil,
-					KVS:      nil,
-				}},
+			NewInt(30).AsRet(),
 		},
 		{
 			"assign ident",
 			"main() { i = 4004; return i; }",
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Int,
-					Str:      "",
-					NumFloat: 0,
-					NumInt:   4004,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewInt(4004).AsRet(),
 		},
 		{
 			"assign dict",
 			`main() { d = {"k1": 300}; d["k1"] = "v1"; return d["k1"]; }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     String,
-					Str:      "v1",
-					NumFloat: 0,
-					NumInt:   0,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewString("v1").AsRet(),
 		},
 		{
 			"assign array",
 			`main() { f = 0.1; li = [0, f, "hello"]; return li[1]; }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Float,
-					Str:      "",
-					NumFloat: 0.1,
-					NumInt:   0,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewFloat(0.1).AsRet(),
 		},
 		{
 			"assign array array",
 			`retX(x){return x;} main() { li = [0, 0, "hello", [{"k2": [retX(6000)]}]]; return li[3][0]["k2"][0]; }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Int,
-					Str:      "",
-					NumFloat: 0,
-					NumInt:   6000,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewInt(6000).AsRet(),
 		},
 		{
 			"add string",
 			`sayHello(name) { return "hello, " + name; } main() { return sayHello("john"); }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     String,
-					Str:      "hello, john",
-					NumFloat: 0,
-					NumInt:   0,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewString("hello, john").AsRet(),
 		},
 		{
 			"add assign array array",
 			`retX(x){return x;} main() { li = [0, 0, "hello", [{"k2": [retX(6000+300)]}]]; return li[3][0]["k2"][0] + 20.0; }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Float,
-					Str:      "",
-					NumFloat: 6320,
-					NumInt:   0,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewFloat(6320).AsRet(),
 		},
 		{
 			"add-sub-mul-div-mod assign array array",
 			`retX(x){return x;} main() { li = [0, 0, "hello", [{"k2": [retX(9%2+1-(3*3/(4-3)))]}]]; return li[3][0]["k2"][0] + 20.0; }`,
-			&Object{
-				Kind: ObjLiteral,
-				Literal: &Literal{
-					Kind:     Float,
-					Str:      "",
-					NumFloat: 13,
-					NumInt:   0,
-					Items:    nil,
-					KVS:      nil,
-				},
-			},
+			NewFloat(13).AsRet(),
 		},
 		// eq
 		{
 			"same string",
 			`main() { s = "hello"; return "hello" == s; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"not same string",
 			`main() { s = "hello"; return "hello11" == s; }`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"same int",
 			`main() {i = 1; return 1 == i;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"not same int",
 			`main() {i = 1; return 99 == i;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"same float",
 			`main() {f = 1.0; return 1.0 == f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"not same float",
 			`main() {f = 1.0; return 1.1 == f; }`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		// ne
 		{
 			"same string",
 			`main() { s = "hello"; return "hello" != s; }`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"not same string",
 			`main() { s = "hello"; return "hello11" != s; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"same int",
 			`main() {i = 1; return 1 != i;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"not same int",
 			`main() {i = 1; return 99 != i;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"same float",
 			`main() {f = 1.0; return 1.0 != f; }`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"not same float",
 			`main() {f = 1.0; return 1.1 != f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		// lt
 		{
 			"lt int",
 			`main() { t = 1 < 5; f = 5 < 1; return t != f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"lt float",
 			`main() { t = 1.1 < 5.1; f = 5.1 < 1.1; return t != f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		// le
 		{
 			"le int",
 			`main() { t = 5 <= 5; f = 5 <= 1; return t != f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"le float",
 			`main() { t = 5.1 <= 5.1; f = 5.1 <= 1.1; return t != f; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		// gt
 		{
 			"gt int",
 			`main() { f = 1 > 5; t = 5 > 1; return f != t; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"gt float",
 			`main() { f = 1.1 > 5.1; t = 5.1 > 1.1; return f != t; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"ge int",
 			`main() { t = 5 >= 5; t2 = 5 >= 1; return t == t2; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"ge float",
 			`main() { t = 5.1 >= 5.1; t2 = 5.1 >= 1.1; return t == t2; }`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		// not
 		{
 			"not",
 			`main() {return !true;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"not",
 			`main() {return !false;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		// or
 		{
 			"or",
 			`main() {return true || true;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"or",
 			`main() {return true || false;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"or",
 			`main() {return false || false;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		// and
 		{
 			"and",
 			`main() {return true && true;}`,
-			NewTrue(),
+			NewTrue().AsRet(),
 		},
 		{
 			"and",
 			`main() {return true && false;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		{
 			"and",
 			`main() {return false && false;}`,
-			NewFalse(),
+			NewFalse().AsRet(),
 		},
 		// not and or
 		{
 			"not and or",
 			`main() { f = !false && false; t = !(!true || true); return !(f && t); }`,
-			NewTrue(),
+			NewTrue().AsRet(),
+		},
+		{
+			"if",
+			`main() { if (30 < 40) { return 30; } return 40; }`,
+			NewInt(30).AsRet(),
+		},
+		{
+			"if",
+			`main() { if (30 > 40) { return 30; } return 40; }`,
+			NewInt(40).AsRet(),
 		},
 	}
 

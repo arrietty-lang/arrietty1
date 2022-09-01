@@ -62,6 +62,21 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return or(scope, node)
 	case parse.Not:
 		return not(scope, node)
+	case parse.If:
+		return if_(scope, node)
+	case parse.Block:
+		var result *Object = nil
+		for _, n := range node.Children {
+			r, err := eval(scope, n)
+			if err != nil {
+				return nil, err
+			}
+			if r != nil && r.IsResult {
+				result = r
+				break
+			}
+		}
+		return result, nil
 	case parse.Assign:
 		// 保存する値
 		rhs, err := eval(scope, node.Rhs)
@@ -108,7 +123,14 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		}
 		return nil, nil
 	case parse.Return:
-		return eval(scope, node.Children[0])
+		ret, err := eval(scope, node.Children[0])
+		if err != nil {
+			return nil, err
+		}
+		if ret != nil {
+			return ret.AsRet(), nil
+		}
+		return nil, nil
 	case parse.Call:
 		id := node.Children[0]
 		args := node.Children[1]

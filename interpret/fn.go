@@ -26,17 +26,6 @@ func (f *Fn) Exec(scope *Storage, args []*parse.Node) (*Object, error) {
 		}
 	}
 
-	// evalは式の結果を返してくれるが、return式以外の式は結果として返却をしないので個別のノードで計算を行う
-	// -> 一括で実行しない
-	var result *Object = nil
-	for _, n := range f.Body.Children {
-		r, err := eval(f.Local, n)
-		if err != nil {
-			return nil, err
-		}
-		if (*n).Kind == parse.Return {
-			result = r
-		}
-	}
-	return result, nil
+	ifBlock := f.Body
+	return eval(f.Local, ifBlock)
 }

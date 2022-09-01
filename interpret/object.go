@@ -10,10 +10,16 @@ type Object struct {
 
 	*Fn
 	*Literal
+	IsResult bool
 }
 
 func (o *Object) isLiteral() bool {
 	return o.Kind == ObjLiteral
+}
+
+func (o *Object) AsRet() *Object {
+	o.IsResult = true
+	return o
 }
 
 func (o *Object) String() string {
