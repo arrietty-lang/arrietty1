@@ -312,7 +312,7 @@ func array() *Node {
 			break
 		}
 	}
-	return NewNodeWithChildren(Array, nodes)
+	return NewNodeWithChildren(List, nodes)
 }
 
 func dict() *Node {

@@ -35,7 +35,7 @@ const (
 	Int
 	String
 	Raw
-	Array
+	List
 	Dict
 	KV
 	True
