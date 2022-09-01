@@ -62,8 +62,8 @@ newline = "\n"
 - [x] Function
 - [x] Block
 - [x] Return 
-- [ ] If
-- [ ] IfElse
+- [x] If
+- [x] IfElse
 - [ ] While
 - [ ] For
 - [x] Assign

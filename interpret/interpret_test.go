@@ -227,6 +227,16 @@ func TestInterpret(t *testing.T) {
 			`main() { if (30 > 40) { return 30; } return 40; }`,
 			NewInt(40).AsRet(),
 		},
+		{
+			"if else",
+			`main() { if (30<40) {return true;} else {return false;} return 50; }`,
+			NewTrue().AsRet(),
+		},
+		{
+			"if else",
+			`main() { if (30>40) {return true;} else {return false;} return 50; }`,
+			NewFalse().AsRet(),
+		},
 	}
 
 	for _, tt := range tests {
