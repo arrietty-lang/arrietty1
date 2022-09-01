@@ -64,8 +64,8 @@ newline = "\n"
 - [x] Return 
 - [x] If
 - [x] IfElse
-- [ ] While
-- [ ] For
+- [x] While
+- [x] For
 - [x] Assign
 - [x] Not
 - [x] And

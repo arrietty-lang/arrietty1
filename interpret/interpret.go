@@ -66,6 +66,10 @@ func eval(scope *Storage, node *parse.Node) (*Object, error) {
 		return if_(scope, node)
 	case parse.IfElse:
 		return ifElse(scope, node)
+	case parse.While:
+		return while_(scope, node)
+	case parse.For:
+		return for_(scope, node)
 	case parse.Block:
 		var result *Object = nil
 		for _, n := range node.Children {
