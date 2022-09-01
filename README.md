@@ -1,5 +1,12 @@
 # Arrietty
 
+### Reserved Idents (keyword)
+```text
+return, if, else, while, for,
+float, int, string, raw, array, dict, bool, true, false, null, void
+print, len, type
+```
+
 ### Grammar
 ```text
 program    = toplevel*
@@ -20,11 +27,6 @@ mul        = unary ("*" unary | "/" unary | "%" unary)*
 unary      = ("+" | "-" | "!")? primary
 primary    = access
 access     = literal ("[" expr "]")*
-
-callArgs   = expr ("," expr)*
-funcParams = ident ("," ident)*
-
-
 literal = "(" expr ")"
         | ident
         | ident "(" callArgs? ")"
@@ -36,6 +38,17 @@ literal = "(" expr ")"
         | dict
         | bool
         | null
+
+
+data-type  = "float" | "int" | "string" | "bool" | "void"
+           | ident
+           | "[" expr? "]" data-type
+           | "dict" "[" data-type "]" data-type
+
+
+callArgs   = expr ("," expr)*
+funcParams = ident ("," ident)*
+
 
 array = "[" primary? "]"
       | "[" primary ("," primary)* "]"
