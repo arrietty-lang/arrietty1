@@ -94,15 +94,15 @@ func stmt() *Node {
 		var initExpr *Node
 		var condExpr *Node
 		var loopExpr *Node
-		if consume(tokenize.Semi) != nil {
+		if consume(tokenize.Semi) == nil {
 			initExpr = expr()
 			expect(tokenize.Semi)
 		}
-		if consume(tokenize.Semi) != nil {
+		if consume(tokenize.Semi) == nil {
 			condExpr = expr()
 			expect(tokenize.Semi)
 		}
-		if consume(tokenize.Rrb) != nil {
+		if consume(tokenize.Rrb) == nil {
 			loopExpr = expr()
 			expect(tokenize.Rrb)
 		}
