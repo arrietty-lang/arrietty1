@@ -46,12 +46,13 @@ const (
 	Ge // >= 35
 	Le // <=
 
-	Assign    // =
-	AddAssign // +=
-	SubAssign // -=
-	MulAssign // *= 40
-	DivAssign // /=
-	ModAssign // %=
+	Assign      // =
+	AddAssign   // +=
+	SubAssign   // -=
+	MulAssign   // *= 40
+	DivAssign   // /=
+	ModAssign   // %=
+	ColonAssign // :=
 
 	And // &&
 	Or  // ||

@@ -10,7 +10,7 @@ print, len, type
 ### Grammar
 ```text
 program    = toplevel*
-toplevel   = ident "(" funcParams? ")" block
+toplevel   = types ident "(" funcParams? ")" block
 block      = "{" stmt* "}"
 stmt       =  expr ";"
            | "return" expr ";"
@@ -18,7 +18,9 @@ stmt       =  expr ";"
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
 expr       = assign
-assign     = andor ("=" andor)?
+assign     = "var" ident types ("=" andor)?   // varDecl (and assign)
+           | ident ":=" andor                 // short varDecl
+           | andor ("=" andor)?               // andor (or assign)
 andor      = equality ("&&" equality | "||" equality)*
 equality   = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
@@ -34,23 +36,23 @@ literal = "(" expr ")"
         | int
         | string
         | raw
-        | array
+        | list
         | dict
         | bool
         | null
 
 
-data-type  = "float" | "int" | "string" | "bool" | "void"
+types      = "float" | "int" | "string" | "bool" | "void"
            | ident
-           | "[" expr? "]" data-type
-           | "dict" "[" data-type "]" data-type
+           | "[" expr? "]" datType
+           | "dict" "[" types "]" types
 
 
 callArgs   = expr ("," expr)*
 funcParams = ident ("," ident)*
 
 
-array = "[" primary? "]"
+list = "[" primary? "]"
       | "[" primary ("," primary)* "]"
 
 dict  = "{" kv? "}"
