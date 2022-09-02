@@ -1,8 +1,9 @@
 package parse
 
 import (
-	"github.com/x0y14/arrietty/tokenize"
 	"log"
+
+	"github.com/x0y14/arrietty/tokenize"
 )
 
 var token *tokenize.Token
@@ -48,7 +49,9 @@ func program() []*Node {
 }
 
 func toplevel() *Node {
-	// call
+	// define function
+	retType := types()
+
 	id := NewNodeIdent(expect(tokenize.Ident).Str)
 	expect(tokenize.Lrb)
 
@@ -64,7 +67,7 @@ func toplevel() *Node {
 
 	codeBlock := block()
 
-	return NewNodeFunction(id, params, codeBlock)
+	return NewNode(FuncDef, retType, NewNodeFunction(id, params, codeBlock))
 }
 
 func block() *Node {
@@ -134,19 +137,23 @@ func assign() *Node {
 	if consumeIdent("var") != nil {
 		// varDecl
 		id := expect(tokenize.Ident)
-		//node = NewNode(VarDecl, NewNodeIdent(id.Str), nil)
+		node = NewNode(VarDecl, NewNodeIdent(id.Str), types())
 
 		if consume(tokenize.Assign) != nil {
 			// and assign
-
-		} else {
-			// only decl
+			node = NewNode(Assign, node, andor())
 		}
+		// only decl
+		return node
 	}
 
-	node := andor()
+	// shortVarDecl or assign or andor
+	node = andor()
+
 	if consume(tokenize.Assign) != nil {
 		node = NewNode(Assign, node, andor())
+	} else if consume(tokenize.ColonAssign) != nil {
+		node = NewNode(ShortVarDecl, node, andor())
 	}
 	return node
 }
@@ -320,6 +327,43 @@ func types() *Node {
 	if consumeIdent("string") != nil {
 		return NewNodeWithChildren(String, nil)
 	}
+	if consumeIdent("bool") != nil {
+		return NewNodeWithChildren(Bool, nil)
+	}
+	if consumeIdent("void") != nil {
+		return NewNodeWithChildren(Void, nil)
+	}
+	if consume(tokenize.Lsb) != nil {
+		// list
+		// lengthはevalしてintが出ることを期待している
+		// [?]type
+		// ^^^
+		var length *Node
+		if consume(tokenize.Rsb) == nil {
+			// length
+			length = expr()
+			expect(tokenize.Rsb)
+		} else {
+			// dynamic
+			length = &Node{Kind: Int, NumInt: -1}
+		}
+		// [?]type
+		//    ^^^^
+		itemType := types()
+		return NewNodeWithChildren(List, []*Node{length, itemType})
+	}
+	if consumeIdent("dict") != nil {
+		// dict
+		// dict[k-type]v-type
+		//     ^^^^^^^
+		expect(tokenize.Lsb)
+		keyType := types()
+		expect(tokenize.Rsb)
+		valueType := types()
+		return NewNodeWithChildren(Dict, []*Node{keyType, valueType})
+	}
+	// named ident
+	return NewNodeIdent(expect(tokenize.Ident).Str)
 }
 
 func callArgs() *Node {

@@ -1,9 +1,10 @@
 package parse
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/x0y14/arrietty/tokenize"
-	"testing"
 )
 
 func TestParse(t *testing.T) {
@@ -16,6 +17,11 @@ func TestParse(t *testing.T) {
 			"add",
 			"main() { 1 + 1; }",
 			[]*Node{},
+		},
+		{
+			"ioio",
+			`int retX(x int) { return x; } int main() { return retX(30); }`,
+			[]*Node{{Kind: Int, NumInt: 30}},
 		},
 	}
 

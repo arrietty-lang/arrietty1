@@ -28,6 +28,7 @@ const (
 	Div // /
 	Mod // %
 
+	FuncDef
 	VarDecl
 	ShortVarDecl
 	Assign // =
@@ -41,8 +42,10 @@ const (
 	List
 	Dict
 	KV
+	Bool
 	True
 	False
+	Void
 	Null
 
 	Args
