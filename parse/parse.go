@@ -20,6 +20,15 @@ func consume(kind tokenize.TokenKind) *tokenize.Token {
 	return nil
 }
 
+func consumeIdent(id string) *tokenize.Token {
+	if token.Kind == tokenize.Ident && id == token.Str {
+		tok := token
+		token = token.Next
+		return tok
+	}
+	return nil
+}
+
 func expect(kind tokenize.TokenKind) *tokenize.Token {
 	if token.Kind == kind {
 		tok := token
@@ -121,6 +130,20 @@ func expr() *Node {
 }
 
 func assign() *Node {
+	var node *Node
+	if consumeIdent("var") != nil {
+		// varDecl
+		id := expect(tokenize.Ident)
+		//node = NewNode(VarDecl, NewNodeIdent(id.Str), nil)
+
+		if consume(tokenize.Assign) != nil {
+			// and assign
+
+		} else {
+			// only decl
+		}
+	}
+
 	node := andor()
 	if consume(tokenize.Assign) != nil {
 		node = NewNode(Assign, node, andor())
@@ -285,6 +308,18 @@ func immediate() *Node {
 	}
 	log.Fatalf("unexpected token: %v", token)
 	return nil
+}
+
+func types() *Node {
+	if consumeIdent("float") != nil {
+		return NewNodeWithChildren(Float, nil)
+	}
+	if consumeIdent("int") != nil {
+		return NewNodeWithChildren(Int, nil)
+	}
+	if consumeIdent("string") != nil {
+		return NewNodeWithChildren(String, nil)
+	}
 }
 
 func callArgs() *Node {

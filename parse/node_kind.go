@@ -13,21 +13,24 @@ const (
 	While
 	For
 
-	Not    // !
+	Not // !
+	And // &&
+	Or  // ||
+	Eq  // ==
+	Ne  // !=
+	Lt  // <
+	Le  // <=
+	Gt  // >
+	Ge  // >=
+	Add // +
+	Sub // -
+	Mul // *
+	Div // /
+	Mod // %
+
+	VarDecl
+	ShortVarDecl
 	Assign // =
-	And    // &&
-	Or     // ||
-	Eq     // ==
-	Ne     // !=
-	Lt     // <
-	Le     // <=
-	Gt     // >
-	Ge     // >=
-	Add    // +
-	Sub    // -
-	Mul    // *
-	Div    // /
-	Mod    // %
 
 	Ident
 	Call
