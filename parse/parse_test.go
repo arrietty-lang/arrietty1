@@ -20,8 +20,8 @@ func TestParse(t *testing.T) {
 		},
 		{
 			"ioio",
-			`int retX(x int) { return x; } int main() { return retX(30); }`,
-			[]*Node{{Kind: Int, NumInt: 30}},
+			`int retX(x) { return x; } int main() { return retX(30); }`,
+			[]*Node{},
 		},
 	}
 

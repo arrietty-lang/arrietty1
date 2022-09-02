@@ -318,19 +318,19 @@ func immediate() *Node {
 }
 
 func types() *Node {
-	if consumeIdent("float") != nil {
+	if consume(tokenize.KWFloat) != nil {
 		return NewNodeWithChildren(Float, nil)
 	}
-	if consumeIdent("int") != nil {
+	if consume(tokenize.KWInt) != nil {
 		return NewNodeWithChildren(Int, nil)
 	}
-	if consumeIdent("string") != nil {
+	if consume(tokenize.KWString) != nil {
 		return NewNodeWithChildren(String, nil)
 	}
-	if consumeIdent("bool") != nil {
+	if consume(tokenize.KWBool) != nil {
 		return NewNodeWithChildren(Bool, nil)
 	}
-	if consumeIdent("void") != nil {
+	if consume(tokenize.KWVoid) != nil {
 		return NewNodeWithChildren(Void, nil)
 	}
 	if consume(tokenize.Lsb) != nil {
@@ -352,7 +352,7 @@ func types() *Node {
 		itemType := types()
 		return NewNodeWithChildren(List, []*Node{length, itemType})
 	}
-	if consumeIdent("dict") != nil {
+	if consume(tokenize.KWDict) != nil {
 		// dict
 		// dict[k-type]v-type
 		//     ^^^^^^^
