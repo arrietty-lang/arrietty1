@@ -375,9 +375,12 @@ func callArgs() *Node {
 }
 
 func funcParams() *Node {
-	nodes := []*Node{NewNodeIdent(consume(tokenize.Ident).Str)}
+	id := NewNodeIdent(consume(tokenize.Ident).Str)
+	nodes := []*Node{NewNode(Param, id, types())}
+
 	for consume(tokenize.Comma) != nil {
-		nodes = append(nodes, NewNodeIdent(consume(tokenize.Ident).Str))
+		id = NewNodeIdent(consume(tokenize.Ident).Str)
+		nodes = append(nodes, NewNode(Param, id, types()))
 	}
 	return NewNodeWithChildren(Params, nodes)
 }

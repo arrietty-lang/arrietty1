@@ -50,6 +50,7 @@ const (
 
 	Args
 	Params
+	Param
 
 	Access
 

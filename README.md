@@ -49,7 +49,7 @@ types      = "float" | "int" | "string" | "bool" | "void"
 
 
 callArgs   = expr ("," expr)*
-funcParams = ident ("," ident)*
+funcParams = ident types ("," ident types)*
 
 
 list = "[" primary? "]"
