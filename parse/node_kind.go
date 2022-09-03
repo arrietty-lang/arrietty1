@@ -13,21 +13,25 @@ const (
 	While
 	For
 
-	Not    // !
+	Not // !
+	And // &&
+	Or  // ||
+	Eq  // ==
+	Ne  // !=
+	Lt  // <
+	Le  // <=
+	Gt  // >
+	Ge  // >=
+	Add // +
+	Sub // -
+	Mul // *
+	Div // /
+	Mod // %
+
+	FuncDef
+	VarDecl
+	ShortVarDecl
 	Assign // =
-	And    // &&
-	Or     // ||
-	Eq     // ==
-	Ne     // !=
-	Lt     // <
-	Le     // <=
-	Gt     // >
-	Ge     // >=
-	Add    // +
-	Sub    // -
-	Mul    // *
-	Div    // /
-	Mod    // %
 
 	Ident
 	Call
@@ -35,15 +39,18 @@ const (
 	Int
 	String
 	Raw
-	Array
+	List
 	Dict
 	KV
+	Bool
 	True
 	False
+	Void
 	Null
 
 	Args
 	Params
+	Param
 
 	Access
 

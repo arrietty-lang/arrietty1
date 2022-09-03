@@ -1,8 +1,9 @@
 package parse
 
 import (
-	"github.com/x0y14/arrietty/tokenize"
 	"log"
+
+	"github.com/x0y14/arrietty/tokenize"
 )
 
 var token *tokenize.Token
@@ -13,6 +14,15 @@ func isEof() bool {
 
 func consume(kind tokenize.TokenKind) *tokenize.Token {
 	if token.Kind == kind {
+		tok := token
+		token = token.Next
+		return tok
+	}
+	return nil
+}
+
+func consumeIdent(id string) *tokenize.Token {
+	if token.Kind == tokenize.Ident && id == token.Str {
 		tok := token
 		token = token.Next
 		return tok
@@ -39,7 +49,9 @@ func program() []*Node {
 }
 
 func toplevel() *Node {
-	// call
+	// define function
+	retType := types()
+
 	id := NewNodeIdent(expect(tokenize.Ident).Str)
 	expect(tokenize.Lrb)
 
@@ -55,7 +67,7 @@ func toplevel() *Node {
 
 	codeBlock := block()
 
-	return NewNodeFunction(id, params, codeBlock)
+	return NewNode(FuncDef, retType, NewNodeFunction(id, params, codeBlock))
 }
 
 func block() *Node {
@@ -121,9 +133,27 @@ func expr() *Node {
 }
 
 func assign() *Node {
-	node := andor()
+	var node *Node
+	if consumeIdent("var") != nil {
+		// varDecl
+		id := expect(tokenize.Ident)
+		node = NewNode(VarDecl, NewNodeIdent(id.Str), types())
+
+		if consume(tokenize.Assign) != nil {
+			// and assign
+			node = NewNode(Assign, node, andor())
+		}
+		// only decl
+		return node
+	}
+
+	// shortVarDecl or assign or andor
+	node = andor()
+
 	if consume(tokenize.Assign) != nil {
 		node = NewNode(Assign, node, andor())
+	} else if consume(tokenize.ColonAssign) != nil {
+		node = NewNode(ShortVarDecl, node, andor())
 	}
 	return node
 }
@@ -287,6 +317,55 @@ func immediate() *Node {
 	return nil
 }
 
+func types() *Node {
+	if consume(tokenize.KWFloat) != nil {
+		return NewNodeWithChildren(Float, nil)
+	}
+	if consume(tokenize.KWInt) != nil {
+		return NewNodeWithChildren(Int, nil)
+	}
+	if consume(tokenize.KWString) != nil {
+		return NewNodeWithChildren(String, nil)
+	}
+	if consume(tokenize.KWBool) != nil {
+		return NewNodeWithChildren(Bool, nil)
+	}
+	if consume(tokenize.KWVoid) != nil {
+		return NewNodeWithChildren(Void, nil)
+	}
+	if consume(tokenize.Lsb) != nil {
+		// list
+		// lengthはevalしてintが出ることを期待している
+		// [?]type
+		// ^^^
+		var length *Node
+		if consume(tokenize.Rsb) == nil {
+			// length
+			length = expr()
+			expect(tokenize.Rsb)
+		} else {
+			// dynamic
+			length = &Node{Kind: Int, NumInt: -1}
+		}
+		// [?]type
+		//    ^^^^
+		itemType := types()
+		return NewNodeWithChildren(List, []*Node{length, itemType})
+	}
+	if consume(tokenize.KWDict) != nil {
+		// dict
+		// dict[k-type]v-type
+		//     ^^^^^^^
+		expect(tokenize.Lsb)
+		keyType := types()
+		expect(tokenize.Rsb)
+		valueType := types()
+		return NewNodeWithChildren(Dict, []*Node{keyType, valueType})
+	}
+	// named ident
+	return NewNodeIdent(expect(tokenize.Ident).Str)
+}
+
 func callArgs() *Node {
 	nodes := []*Node{expr()}
 	for consume(tokenize.Comma) != nil {
@@ -296,9 +375,12 @@ func callArgs() *Node {
 }
 
 func funcParams() *Node {
-	nodes := []*Node{NewNodeIdent(consume(tokenize.Ident).Str)}
+	id := NewNodeIdent(consume(tokenize.Ident).Str)
+	nodes := []*Node{NewNode(Param, id, types())}
+
 	for consume(tokenize.Comma) != nil {
-		nodes = append(nodes, NewNodeIdent(consume(tokenize.Ident).Str))
+		id = NewNodeIdent(consume(tokenize.Ident).Str)
+		nodes = append(nodes, NewNode(Param, id, types()))
 	}
 	return NewNodeWithChildren(Params, nodes)
 }
@@ -312,7 +394,7 @@ func array() *Node {
 			break
 		}
 	}
-	return NewNodeWithChildren(Array, nodes)
+	return NewNodeWithChildren(List, nodes)
 }
 
 func dict() *Node {

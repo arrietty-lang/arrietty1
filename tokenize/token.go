@@ -84,6 +84,8 @@ func NewOpSymbol(cur *Token, pos *Position, str string) *Token {
 		tok = NewToken(DivAssign, pos, str, 0, 0)
 	case "%=":
 		tok = NewToken(ModAssign, pos, str, 0, 0)
+	case ":=":
+		tok = NewToken(ColonAssign, pos, str, 0, 0)
 
 	case "&&":
 		tok = NewToken(And, pos, str, 0, 0)
