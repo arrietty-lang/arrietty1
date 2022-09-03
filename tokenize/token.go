@@ -103,38 +103,12 @@ func NewOpSymbol(cur *Token, pos *Position, str string) *Token {
 func NewIdent(cur *Token, pos *Position, str string) *Token {
 	var tok *Token
 	switch str {
-	case "for":
-		tok = NewToken(KWFor, pos, str, 0, 0)
-	case "while":
-		tok = NewToken(KWWhile, pos, str, 0, 0)
-	case "if":
-		tok = NewToken(KWIf, pos, str, 0, 0)
-	case "else":
-		tok = NewToken(KWElse, pos, str, 0, 0)
-	case "return":
-		tok = NewToken(KWReturn, pos, str, 0, 0)
-
-	// data types
-	case "dict":
-		tok = NewToken(KWDict, pos, str, 0, 0)
-	case "float":
-		tok = NewToken(KWFloat, pos, str, 0, 0)
-	case "int":
-		tok = NewToken(KWInt, pos, str, 0, 0)
-	case "string":
-		tok = NewToken(KWString, pos, str, 0, 0)
-	case "bool":
-		tok = NewToken(KWBool, pos, str, 0, 0)
-	case "void":
-		tok = NewToken(KWVoid, pos, str, 0, 0)
-
 	case "true":
 		tok = NewToken(True, pos, str, 0, 0)
 	case "false":
 		tok = NewToken(False, pos, str, 0, 0)
 	case "null":
 		tok = NewToken(Null, pos, str, 0, 0)
-
 	default:
 		tok = NewToken(Ident, pos, str, 0, 0)
 	}

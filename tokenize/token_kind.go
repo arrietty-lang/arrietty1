@@ -58,19 +58,4 @@ const (
 	Or  // ||
 	Not // ! 45
 	operatorsEnd
-
-	keywordBegin // 予約後
-	KWFor
-	KWWhile
-	KWIf // 50
-	KWElse
-	KWReturn
-
-	KWDict
-	KWFloat
-	KWInt // 55
-	KWString
-	KWBool
-	KWVoid
-	keywordEnd
 )
