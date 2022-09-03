@@ -14,7 +14,7 @@ const (
 	Float
 	Int
 	String
-	Raw
+	RawString
 	True // 10
 	False
 	Null

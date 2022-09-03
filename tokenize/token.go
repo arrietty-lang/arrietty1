@@ -137,7 +137,7 @@ func NewInt(cur *Token, pos *Position, n int) *Token {
 func NewString(cur *Token, pos *Position, str string, isRaw bool) *Token {
 	var tok *Token
 	if isRaw {
-		tok = NewToken(Raw, pos, str, 0, 0)
+		tok = NewToken(RawString, pos, str, 0, 0)
 	} else {
 		tok = NewToken(String, pos, str, 0, 0)
 	}
