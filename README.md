@@ -1,5 +1,12 @@
 # Arrietty
 
+### 手順
+- tokenize  -> 文字列をトークンに
+- parse     -> トークンを構文解析しParseTreeに
+- analyze   -> ParseTreeを意味解析しASTを作る(多分)
+- interpret -> ...
+- compile   -> ...
+
 ### Reserved Idents (keyword)
 ```text
 return, if, else, while, for,
