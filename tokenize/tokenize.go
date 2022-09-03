@@ -1,7 +1,6 @@
 package tokenize
 
 import (
-	"log"
 	"strconv"
 	"unicode"
 )
@@ -232,7 +231,7 @@ inputLoop:
 			}
 		}
 
-		log.Fatalf("[%d:%d] unexpected character: %s", lno, lat, string(userInput[wat]))
+		return nil, NewUnexpectedCharacterErr(userInput[wat], NewPosition(lno, lat, wat))
 	}
 
 	cur = NewEof(cur, NewPosition(lno, lat, wat))
