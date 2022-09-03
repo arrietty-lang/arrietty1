@@ -166,14 +166,14 @@ inputLoop:
 	for isNotEof() {
 		// white
 		if userInput[wat] == ' ' || userInput[wat] == '\t' {
-			//_ = NewPosition(lno, lat, wat)
-			_ = consumeWhite()
-			//cur = NewWhite(cur, pos, s)
+			pos := NewPosition(lno, lat, wat)
+			s := consumeWhite()
+			cur = NewWhite(cur, pos, s)
 			continue
 		}
 		// newline
 		if userInput[wat] == '\n' {
-			//_ = NewNL(cur, NewPosition(lno, lat, wat), "\n")
+			cur = NewNL(cur, NewPosition(lno, lat, wat), "\n")
 			lno++
 			lat = 0
 			wat++
@@ -181,9 +181,9 @@ inputLoop:
 		}
 		// comment
 		if userInput[wat] == '#' {
-			//	pos := NewPosition(lno, lat, wat)
-			_ = consumeComment()
-			//	cur = NewComment(cur, pos, comment)
+			pos := NewPosition(lno, lat, wat)
+			s := consumeComment()
+			cur = NewComment(cur, pos, s)
 			continue
 		}
 		// op symbols
