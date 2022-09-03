@@ -6,21 +6,21 @@ type Token struct {
 	Kind TokenKind
 	Pos  *Position
 
-	Str      string
-	NumFloat float64
-	NumInt   int
+	S string
+	F float64
+	I int
 
 	Next *Token
 }
 
 func NewToken(kind TokenKind, pos *Position, str string, nf float64, ni int) *Token {
 	return &Token{
-		Kind:     kind,
-		Pos:      pos,
-		Str:      str,
-		NumFloat: nf,
-		NumInt:   ni,
-		Next:     nil,
+		Kind: kind,
+		Pos:  pos,
+		S:    str,
+		F:    nf,
+		I:    ni,
+		Next: nil,
 	}
 }
 
