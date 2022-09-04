@@ -57,6 +57,77 @@ func TestParseNode(t *testing.T) {
 			"",
 			"void",
 			nil,
+			NewUnexpectedTokenErr("Ident", &tokenize.Token{
+				Kind: tokenize.Eof,
+				Pos:  GenPosForTest("void"),
+				S:    "",
+				F:    0,
+				I:    0,
+				Next: nil,
+			}),
+		},
+		{
+			"",
+			`void sayHello(name string) { v_print("hello, " + name); }`,
+			[]*Node{
+				NewNodeFunctionDefine(
+					GenPosForTest(""),
+					NewNodeWithChildren(
+						GenPosForTest(""),
+						Void,
+						nil),
+					NewNodeIdent(
+						GenPosForTest("void "),
+						"sayHello"),
+					NewNodeWithChildren(
+						GenPosForTest("void sayHello("),
+						Params,
+						[]*Node{
+							NewNode(
+								GenPosForTest("void sayHello("),
+								Param,
+								NewNodeIdent(
+									GenPosForTest("void sayHello("),
+									"name"),
+								NewNodeWithChildren(
+									GenPosForTest("void sayHello(name "),
+									String,
+									nil),
+							),
+						}),
+					NewNodeWithChildren(
+						GenPosForTest("void sayHello(name string) "),
+						Block,
+						[]*Node{
+							NewNodeCall(
+								GenPosForTest("void sayHello(name string) { "),
+								NewNodeIdent(
+									GenPosForTest("void sayHello(name string) { "),
+									"v_print",
+								),
+								NewNodeWithChildren(
+									GenPosForTest(`void sayHello(name string) { v_print("hello, " `),
+									Args,
+									[]*Node{
+										NewNode(
+											GenPosForTest(`void sayHello(name string) { v_print("hello, " `),
+											Add,
+											NewNodeImmediate(
+												GenPosForTest("void sayHello(name string) { v_print("),
+												&tokenize.Token{Kind: tokenize.String, S: "hello, "},
+											),
+											NewNodeIdent(
+												GenPosForTest(`void sayHello(name string) { v_print("hello, " + `),
+												"name",
+											),
+										),
+									},
+								),
+							),
+						},
+					),
+				),
+			},
 			nil,
 		},
 	}
