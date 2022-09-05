@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"fmt"
 	"github.com/x0y14/arrietty/tokenize"
 	"log"
 )
@@ -21,6 +22,23 @@ type Node struct {
 	Lhs      *Node
 	Rhs      *Node
 	Children []*Node
+}
+
+func (n *Node) String() string {
+	v := ""
+	switch n.Kind {
+	case String:
+		v = n.S
+	case Int:
+		v = fmt.Sprintf("%d", n.I)
+	case Float:
+		v = fmt.Sprintf("%f", n.F)
+	}
+	if v != "" {
+		v = " : " + v
+	}
+
+	return fmt.Sprintf("[%d:%d(%d)] %s%s", n.Pos.LineNo, n.Pos.Lat, n.Pos.Wat, n.Kind.String(), v)
 }
 
 func NewNode(pos *tokenize.Position, kind NodeKind, lhs, rhs *Node) *Node {

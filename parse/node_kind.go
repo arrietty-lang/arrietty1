@@ -61,3 +61,56 @@ const (
 	//White
 	//Newline
 )
+
+var nodeKinds = [...]string{
+	Block:        "Block",
+	Return:       "Return",
+	If:           "If",
+	IfElse:       "IfElse",
+	While:        "While",
+	For:          "For",
+	Not:          "Not",
+	Plus:         "Plus",
+	Minus:        "Minus",
+	And:          "And",
+	Or:           "Or",
+	Eq:           "Eq",
+	Ne:           "Ne",
+	Lt:           "Lt",
+	Le:           "Le",
+	Gt:           "Gt",
+	Ge:           "Ge",
+	Add:          "Add",
+	Sub:          "Sub",
+	Mul:          "Mul",
+	Div:          "Div",
+	Mod:          "Mod",
+	FuncDef:      "FuncDef",
+	VarDecl:      "VarDecl",
+	ShortVarDecl: "ShortVarDecl",
+	Assign:       "Assign",
+	Ident:        "Ident",
+	Call:         "Call",
+	Float:        "Float",
+	Int:          "Int",
+	String:       "String",
+	RawString:    "RawString",
+	List:         "List",
+	Dict:         "Dict",
+	KV:           "KV",
+	Bool:         "Bool",
+	True:         "True",
+	False:        "False",
+	Void:         "Void",
+	Null:         "Null",
+	Args:         "Args",
+	Params:       "Params",
+	Param:        "Param",
+	Access:       "Access",
+	Parenthesis:  "Parenthesis",
+	Comment:      "Comment",
+}
+
+func (n NodeKind) String() string {
+	return nodeKinds[n]
+}
