@@ -52,6 +52,10 @@ func isNotEof() bool {
 }
 
 func consumeComment() string {
+	// skip "#"
+	lat++
+	wat++
+
 	var s string
 	for isNotEof() {
 		if userInput[wat] == '\n' {
@@ -180,9 +184,9 @@ inputLoop:
 		}
 		// comment
 		if userInput[wat] == '#' {
-			_ = NewPosition(lno, lat, wat)
-			_ = consumeComment()
-			// cur = NewComment(cur, pos, s)
+			pos := NewPosition(lno, lat, wat)
+			s := consumeComment()
+			cur = NewComment(cur, pos, s)
 			continue
 		}
 		// op symbols
