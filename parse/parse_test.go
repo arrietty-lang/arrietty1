@@ -30,7 +30,7 @@ func TestParseNode(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			"",
+			"main, direct return(int)",
 			"void main() { return 1; }",
 			[]*Node{
 				NewNodeFunctionDefine(
@@ -54,7 +54,7 @@ func TestParseNode(t *testing.T) {
 			nil,
 		},
 		{
-			"",
+			"invalid, only type",
 			"void",
 			nil,
 			NewUnexpectedTokenErr("Ident", &tokenize.Token{
@@ -67,7 +67,7 @@ func TestParseNode(t *testing.T) {
 			}),
 		},
 		{
-			"",
+			"void func def, no return",
 			`void sayHello(name string) { v_print("hello, " + name); }`,
 			[]*Node{
 				NewNodeFunctionDefine(
@@ -126,6 +126,81 @@ func TestParseNode(t *testing.T) {
 							),
 						},
 					),
+				),
+			},
+			nil,
+		}, {
+			"k",
+			`void main() { var a int; a = 1; var b int = 2; c := 3; }`,
+			[]*Node{
+				NewNodeFunctionDefine(
+					GenPosForTest(""),
+					NewNodeWithChildren(
+						GenPosForTest(""),
+						Void,
+						nil,
+					),
+					NewNodeIdent(
+						GenPosForTest("void "),
+						"main",
+					),
+					nil,
+					NewNodeWithChildren(
+						GenPosForTest("void main() "),
+						Block,
+						[]*Node{
+							NewNode(
+								GenPosForTest("void main() { "),
+								VarDecl,
+								NewNodeIdent(
+									GenPosForTest("void main() { var "),
+									"a"),
+								NewNodeWithChildren(
+									GenPosForTest("void main() { var a "),
+									Int,
+									nil),
+							),
+							NewNode(
+								GenPosForTest("void main() { var a int; a "),
+								Assign,
+								NewNodeIdent(
+									GenPosForTest("void main() { var a int; "),
+									"a"),
+								NewNodeImmediate(
+									GenPosForTest("void main() { var a int; a = "),
+									&tokenize.Token{Kind: tokenize.Int, I: 1}),
+							),
+							NewNode(
+								GenPosForTest("void main() { var a int; a = 1; var b int "),
+								Assign,
+								NewNode(
+									GenPosForTest("void main() { var a int; a = 1; "),
+									VarDecl,
+									NewNodeIdent(
+										GenPosForTest("void main() { var a int; a = 1; var "),
+										"b"),
+									NewNodeWithChildren(
+										GenPosForTest("void main() { var a int; a = 1; var b "),
+										Int,
+										nil),
+								),
+								NewNodeImmediate(
+									GenPosForTest("void main() { var a int; a = 1; var b int = "),
+									&tokenize.Token{Kind: tokenize.Int, I: 2}),
+							),
+							NewNode(
+								GenPosForTest("void main() { var a int; a = 1; var b int = 2; c "),
+								ShortVarDecl,
+								NewNodeIdent(
+									GenPosForTest("void main() { var a int; a = 1; var b int = 2; "),
+									"c",
+								),
+								NewNodeImmediate(
+									GenPosForTest("void main() { var a int; a = 1; var b int = 2; c := "),
+									&tokenize.Token{Kind: tokenize.Int, I: 3},
+								),
+							),
+						}),
 				),
 			},
 			nil,
