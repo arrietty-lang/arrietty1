@@ -18,12 +18,14 @@ print, len, type
 ```text
 program    = toplevel*
 toplevel   = types ident "(" funcParams? ")" block
+           | comment
 block      = "{" stmt* "}"
 stmt       =  expr ";"
            | "return" expr ";"
            | "if" "(" expr ")" block ("else" block)?
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
+           | comment
 expr       = assign
 assign     = "var" ident types ("=" andor)?   // varDecl (and assign)
            | ident ":=" andor                 // short varDecl
@@ -75,7 +77,7 @@ bool    = "true" | "false"
 null    = "null"
 
 
-comment = "//" any-character*
+comment = "#" any-character*
 white   = " " | "\t"
 newline = "\n"
 ```

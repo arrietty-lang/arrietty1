@@ -130,7 +130,7 @@ func TestParseNode(t *testing.T) {
 			},
 			nil,
 		}, {
-			"k",
+			"variable decl",
 			`void main() { var a int; a = 1; var b int = 2; c := 3; }`,
 			[]*Node{
 				NewNodeFunctionDefine(
@@ -197,6 +197,86 @@ func TestParseNode(t *testing.T) {
 								),
 								NewNodeImmediate(
 									GenPosForTest("void main() { var a int; a = 1; var b int = 2; c := "),
+									&tokenize.Token{Kind: tokenize.Int, I: 3},
+								),
+							),
+						}),
+				),
+			},
+			nil,
+		}, {
+			"variable decl with comment",
+			`#this is comment
+void main() { var a int; a = 1; var b int = 2; c := 3; }`,
+			[]*Node{
+				NewNodeComment(
+					GenPosForTest(""),
+					"this is comment",
+				),
+				NewNodeFunctionDefine(
+					GenPosForTest("#this is comment\n"),
+					NewNodeWithChildren(
+						GenPosForTest("#this is comment\n"),
+						Void,
+						nil,
+					),
+					NewNodeIdent(
+						GenPosForTest("#this is comment\nvoid "),
+						"main",
+					),
+					nil,
+					NewNodeWithChildren(
+						GenPosForTest("#this is comment\nvoid main() "),
+						Block,
+						[]*Node{
+							NewNode(
+								GenPosForTest("#this is comment\nvoid main() { "),
+								VarDecl,
+								NewNodeIdent(
+									GenPosForTest("#this is comment\nvoid main() { var "),
+									"a"),
+								NewNodeWithChildren(
+									GenPosForTest("#this is comment\nvoid main() { var a "),
+									Int,
+									nil),
+							),
+							NewNode(
+								GenPosForTest("#this is comment\nvoid main() { var a int; a "),
+								Assign,
+								NewNodeIdent(
+									GenPosForTest("#this is comment\nvoid main() { var a int; "),
+									"a"),
+								NewNodeImmediate(
+									GenPosForTest("#this is comment\nvoid main() { var a int; a = "),
+									&tokenize.Token{Kind: tokenize.Int, I: 1}),
+							),
+							NewNode(
+								GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b int "),
+								Assign,
+								NewNode(
+									GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; "),
+									VarDecl,
+									NewNodeIdent(
+										GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var "),
+										"b"),
+									NewNodeWithChildren(
+										GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b "),
+										Int,
+										nil),
+								),
+								NewNodeImmediate(
+									GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b int = "),
+									&tokenize.Token{Kind: tokenize.Int, I: 2}),
+							),
+							NewNode(
+								GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b int = 2; c "),
+								ShortVarDecl,
+								NewNodeIdent(
+									GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b int = 2; "),
+									"c",
+								),
+								NewNodeImmediate(
+									GenPosForTest("#this is comment\nvoid main() { var a int; a = 1; var b int = 2; c := "),
 									&tokenize.Token{Kind: tokenize.Int, I: 3},
 								),
 							),

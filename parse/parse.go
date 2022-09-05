@@ -50,6 +50,10 @@ func program() ([]*Node, error) {
 }
 
 func toplevel() (*Node, error) {
+	if c_ := consume(tokenize.Comment); c_ != nil {
+		return NewNodeComment(c_.Pos, c_.S), nil
+	}
+
 	retType, err := types()
 	if err != nil {
 		return nil, err
@@ -110,6 +114,10 @@ func block() (*Node, error) {
 
 func stmt() (*Node, error) {
 	var node *Node
+
+	if c_ := consume(tokenize.Comment); c_ != nil {
+		return NewNodeComment(c_.Pos, c_.S), nil
+	}
 
 	if return_ := consumeIdent("return"); return_ != nil {
 		n, err := expr()
