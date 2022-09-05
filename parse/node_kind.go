@@ -57,7 +57,7 @@ const (
 	Access
 	Parenthesis
 
-	//Comment
+	Comment
 	//White
 	//Newline
 )

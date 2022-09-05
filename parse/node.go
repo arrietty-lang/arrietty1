@@ -145,3 +145,11 @@ func NewNodeAccess(pos *tokenize.Position, ident *Node, dest *Node) *Node {
 		Children: []*Node{ident, dest},
 	}
 }
+
+func NewNodeComment(pos *tokenize.Position, comment string) *Node {
+	return &Node{
+		Kind: Comment,
+		Pos:  pos,
+		S:    comment,
+	}
+}
