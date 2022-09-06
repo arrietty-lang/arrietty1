@@ -705,7 +705,7 @@ func list() (*Node, error) {
 	var nodes []*Node
 
 	for consume(tokenize.Rsb) == nil {
-		n, err := primary()
+		n, err := unary()
 		if err != nil {
 			return nil, err
 		}
@@ -752,7 +752,7 @@ func kv() (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	value, err := primary()
+	value, err := unary()
 	if err != nil {
 		return nil, err
 	}
