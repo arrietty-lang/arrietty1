@@ -120,6 +120,11 @@ func stmt() (*Node, error) {
 	}
 
 	if return_ := consumeIdent("return"); return_ != nil {
+		if consume(tokenize.Semi) != nil {
+			node = NewNodeReturn(return_.Pos, nil)
+			return node, nil
+		}
+
 		n, err := expr()
 		if err != nil {
 			return nil, err

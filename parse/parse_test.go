@@ -285,6 +285,28 @@ void main() { var a int; a = 1; var b int = 2; c := 3; }`,
 			},
 			nil,
 		},
+		{
+			"main, direct return",
+			"void main() { return; }",
+			[]*Node{
+				NewNodeFunctionDefine(
+					GenPosForTest(""),
+					NewNodeWithChildren(GenPosForTest(""), Void, nil),
+					NewNodeIdent(GenPosForTest("void "), "main"),
+					nil,
+					NewNodeWithChildren(
+						GenPosForTest("void main() "),
+						Block,
+						[]*Node{
+							NewNodeReturn(
+								GenPosForTest("void main() { "),
+								nil),
+						},
+					),
+				),
+			},
+			nil,
+		},
 	}
 
 	for _, tt := range tests {
