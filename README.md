@@ -21,7 +21,7 @@ toplevel   = types ident "(" funcParams? ")" block
            | comment
 block      = "{" stmt* "}"
 stmt       =  expr ";"
-           | "return" expr ";"
+           | "return" expr? ";"
            | "if" "(" expr ")" block ("else" block)?
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
