@@ -1,12 +1,14 @@
 package analyze
 
-type Types int
+type TypeKind int
 
 const (
-	_ Types = iota
+	_ TypeKind = iota
 	TFloat
 	TInt
 	TString
 	TBool
 	TVoid
+	TDict
+	TList
 )

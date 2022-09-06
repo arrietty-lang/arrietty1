@@ -9,3 +9,7 @@ type StmtLevel struct {
 	For       *For
 	Comment   *Comment
 }
+
+func NewStmtLevelComment(c string) (*StmtLevel, error) {
+	return &StmtLevel{Kind: STComment, Comment: NewComment(c)}, nil
+}
