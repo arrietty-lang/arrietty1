@@ -307,6 +307,40 @@ void main() { var a int; a = 1; var b int = 2; c := 3; }`,
 			},
 			nil,
 		},
+		{
+			"list",
+			"void main() { return [-2]; }",
+			[]*Node{
+				NewNodeFunctionDefine(
+					GenPosForTest(""),
+					NewNodeWithChildren(GenPosForTest(""), Void, nil),
+					NewNodeIdent(GenPosForTest("void "), "main"),
+					nil,
+					NewNodeWithChildren(
+						GenPosForTest("void main() "),
+						Block,
+						[]*Node{
+							NewNodeReturn(
+								GenPosForTest("void main() { "),
+								NewNodeWithChildren(
+									GenPosForTest("void main() { return "),
+									List,
+									[]*Node{
+										NewNode(
+											GenPosForTest("void main() { return ["),
+											Minus,
+											NewNodeImmediate(
+												GenPosForTest("void main() { return [-"),
+												&tokenize.Token{Kind: tokenize.Int, I: 2}),
+											nil,
+										),
+									})),
+						},
+					),
+				),
+			},
+			nil,
+		},
 	}
 
 	for _, tt := range tests {

@@ -61,12 +61,12 @@ callArgs   = expr ("," expr)*
 funcParams = ident types ("," ident types)*
 
 
-list = "[" primary? "]"
-      | "[" primary ("," primary)* "]"
+list = "[" unary? "]"
+      | "[" unary ("," unary)* "]"
 
 dict  = "{" kv? "}"
       | "{" kv ("," kv)* "}"
-kv    = string ":" primary
+kv    = string ":" unary
 
 ident   = [a-zA-Z_][a-zA-Z0-9_]*
 float   = [0-9]+[0-9.][0-9]+
