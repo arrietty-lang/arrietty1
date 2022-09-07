@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"fmt"
 	"github.com/x0y14/arrietty/tokenize"
 )
 
@@ -614,6 +615,9 @@ func types() (*Node, error) {
 			l_, err := expr()
 			if err != nil {
 				return nil, err
+			}
+			if l_.Kind != Int {
+				return nil, fmt.Errorf("list size must be positive int")
 			}
 			length = l_
 			_, err = expect(tokenize.Rsb)

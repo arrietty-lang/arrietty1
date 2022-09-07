@@ -53,7 +53,7 @@ literal = "(" expr ")"
 
 types      = "float" | "int" | "string" | "bool" | "void"
            | ident
-           | "[" expr? "]" datType
+           | "[" int? "]" types
            | "dict" "[" types "]" types
 
 
