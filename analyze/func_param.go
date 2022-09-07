@@ -4,12 +4,12 @@ import "github.com/x0y14/arrietty/parse"
 
 type FuncParam struct {
 	Ident string
-	Type  *ValueType
+	Type  *DataType
 }
 
 func NewFuncParam(node *parse.Node) (*FuncParam, error) {
 	name := node.Lhs.S
-	typ, err := NewValueType(node.Rhs)
+	typ, err := NewDataType(node.Rhs)
 	if err != nil {
 		return nil, err
 	}

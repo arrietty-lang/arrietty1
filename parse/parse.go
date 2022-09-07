@@ -251,9 +251,11 @@ func stmt() (*Node, error) {
 
 	return node, nil
 }
+
 func expr() (*Node, error) {
 	return assign()
 }
+
 func assign() (*Node, error) {
 	var node *Node
 

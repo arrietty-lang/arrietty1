@@ -22,6 +22,14 @@ func TestAnalyze(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"main",
+			"int main() { v := 1; v = 2; var v2 float = 2; for( i:=0; i < 5; i=i+1) { if(i==0){return 11;} return 1;}}",
+			[]*TopLevel{
+				{Kind: TPComment, Comment: NewComment(" hello")},
+			},
+			nil,
+		},
 	}
 
 	for _, tt := range tests {

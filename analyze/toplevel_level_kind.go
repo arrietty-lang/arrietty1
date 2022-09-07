@@ -85,7 +85,7 @@ var toplevelKinds = [...]string{
 	TPParams:      "Params",
 	TPParam:       "Param",
 	TPVarDecl:     "VarDecl",
-	TPAssign:      "Assign",
+	TPAssign:      "AssignTo",
 	TPIdent:       "Ident",
 	TPCall:        "Call",
 	TPArgs:        "Args",

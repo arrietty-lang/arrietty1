@@ -8,4 +8,6 @@ const (
 	LIdent
 	LCall
 	LAtom
+	LList
+	LDict
 )

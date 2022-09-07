@@ -14,6 +14,7 @@ const (
 	AlreadyDefinedErr
 	UndefinedErr
 	UnsupportedTypeErr
+	TypeErr
 )
 
 type SemanticErr struct {
@@ -56,6 +57,8 @@ func (e *SemanticErr) Error() string {
 		return fmt.Sprintf("undefined: %s", e.Ident)
 	case UnsupportedTypeErr:
 		return fmt.Sprintf("the valutype %s is unsupported", e.Node.String())
+	case TypeErr:
+		return fmt.Sprintf(e.Ident)
 	}
 
 	return ""

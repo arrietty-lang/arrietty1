@@ -2,24 +2,33 @@ package analyze
 
 import "github.com/x0y14/arrietty/parse"
 
-type TopLevel struct { // toplevel
+type TopLevel struct {
 	Kind    ToplevelKind
 	FuncDef *FuncDef
 	Comment *Comment
 }
 
-func NewTopLevelFuncDef(node *parse.Node) (*TopLevel, error) {
+func NewToplevel(node *parse.Node) (*TopLevel, error) {
+	switch node.Kind {
+	case parse.FuncDef:
+		return newTopLevelFuncDef(node)
+	case parse.Comment:
+		return newTopLevelComment(node)
+	}
+
+	return nil, NewUnexpectNodeErr(node)
+}
+
+func newTopLevelFuncDef(node *parse.Node) (*TopLevel, error) {
 	returnTypeNode := node.Children[0]
 	nameNode := node.Children[1]
 	paramsNode := node.Children[2]
 	bodyNode := node.Children[3]
 
-	if isFuncDefined(nameNode.S) {
-		return nil, NewAlreadyDefinedErr("root", nameNode.S)
+	_, yes := isDefinedFunc(nameNode.S)
+	if yes {
+		return nil, NewAlreadyDefinedErr("file-toplevel", nameNode.S)
 	}
-
-	// scope
-	decls[nameNode.S] = map[string]*ValueType{}
 
 	def, err := NewFuncDef(returnTypeNode, nameNode, paramsNode, bodyNode)
 	if err != nil {
@@ -33,7 +42,7 @@ func NewTopLevelFuncDef(node *parse.Node) (*TopLevel, error) {
 	}, nil
 }
 
-func NewTopLevelComment(node *parse.Node) (*TopLevel, error) {
+func newTopLevelComment(node *parse.Node) (*TopLevel, error) {
 	return &TopLevel{
 		Kind:    TPComment,
 		FuncDef: nil,
