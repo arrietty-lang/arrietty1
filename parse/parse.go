@@ -646,6 +646,9 @@ func types() (*Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		if keyType.Kind != String {
+			return nil, fmt.Errorf("dict key is not support other than string")
+		}
 		// dict[k]v
 		//       ^
 		_, err = expect(tokenize.Rsb)
