@@ -495,11 +495,11 @@ func access() (*Node, error) {
 
 	for {
 		if lsb_ := consume(tokenize.Lsb); lsb_ != nil {
-			n, err := expr()
+			index, err := expr()
 			if err != nil {
 				return nil, err
 			}
-			node = NewNodeAccess(lsb_.Pos, node, n)
+			node = NewNodeAccess(lsb_.Pos, node, index)
 			_, err = expect(tokenize.Rsb)
 			if err != nil {
 				return nil, err

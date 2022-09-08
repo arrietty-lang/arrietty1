@@ -3,6 +3,7 @@ package analyze
 import (
 	"fmt"
 	"github.com/x0y14/arrietty/parse"
+	"log"
 )
 
 type AccessLevel struct {
@@ -17,13 +18,18 @@ func (a *AccessLevel) GetType() (*DataType, error) {
 	switch a.Kind {
 	case ACLiteralLevel:
 		return a.LiteralLevel.GetType()
-	case ACDictIndex, ACListIndex:
-		// 判明しているのであれば、シンボルテーブルからより詳細なデータを得られるはず
-		t, ok := isDefinedVariable(currentFunction, a.LiteralLevel.Ident)
-		if !ok {
-			return nil, fmt.Errorf("can't call getType from undefined ident")
+	case ACListIndex:
+		src, err := a.Src.GetType()
+		if err != nil {
+			return nil, err
 		}
-		return t, nil
+		return src.Item, nil
+	case ACDictIndex:
+		src, err := a.Src.GetType()
+		if err != nil {
+			return nil, err
+		}
+		return src.Value, nil
 	case ACUnknownIndex:
 		return a.Src.GetType()
 	}
@@ -60,7 +66,7 @@ func newAccessLevelIndex(node *parse.Node) (*AccessLevel, error) {
 	var indexType = ACUnknownIndex
 
 	// 左辺をidentとして読み取ることができたら、シンボルテーブルから型データを取り出す
-	if src.LiteralLevel.Kind == LIdent {
+	if src.Kind == ACLiteralLevel && src.LiteralLevel.Kind == LIdent {
 		typ, ok := isDefinedVariable(currentFunction, src.LiteralLevel.Ident)
 		if ok {
 			if typ.Type == TList {
@@ -68,6 +74,21 @@ func newAccessLevelIndex(node *parse.Node) (*AccessLevel, error) {
 			} else if typ.Type == TDict {
 				indexType = ACDictIndex
 			}
+		}
+	}
+
+	// dict, listならアクセスlv経由でGetTypeすれば、型が取得できるはず
+	if src.Kind == ACDictIndex || src.Kind == ACListIndex {
+		t, err := src.GetType()
+		if err != nil {
+			return nil, err
+		}
+		if t.Type == TList {
+			indexType = ACListIndex
+		} else if t.Type == TDict {
+			indexType = ACDictIndex
+		} else {
+			log.Fatalf("unsupported access ")
 		}
 	}
 

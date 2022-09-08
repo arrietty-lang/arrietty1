@@ -9,7 +9,7 @@ type FuncParam struct {
 
 func NewFuncParam(node *parse.Node) (*FuncParam, error) {
 	name := node.Lhs.S
-	typ, err := NewDataType(node.Rhs)
+	typ, err := NewDataTypeFromNode(node.Rhs)
 	if err != nil {
 		return nil, err
 	}

@@ -158,9 +158,10 @@ func NewNodeReturn(pos *tokenize.Position, value *Node) *Node {
 
 func NewNodeAccess(pos *tokenize.Position, ident *Node, dest *Node) *Node {
 	return &Node{
-		Pos:      pos,
-		Kind:     Access,
-		Children: []*Node{ident, dest},
+		Pos:  pos,
+		Kind: Access,
+		Lhs:  ident,
+		Rhs:  dest,
 	}
 }
 

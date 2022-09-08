@@ -24,7 +24,7 @@ func TestAnalyze(t *testing.T) {
 		},
 		{
 			"main",
-			"int main() { v := 1; v = 2; var v2 float = 2; for( i:=0; i < 5; i=i+1) { if(i==0){return 11;} return 1;}}",
+			`void f() { var x dict[string][][]dict[string]int = {};  x["k"] = [[{"v":1}]];  x["k"][0][0]["v"]=1; }`,
 			[]*TopLevel{
 				{Kind: TPComment, Comment: NewComment(" hello")},
 			},

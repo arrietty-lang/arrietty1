@@ -16,7 +16,7 @@ func NewFuncDef(retType, name, params, body *parse.Node) (*FuncDef, error) {
 	currentFunction = functionName
 
 	// 戻り値解析
-	returnType, err := NewDataType(retType)
+	returnType, err := NewDataTypeFromNode(retType)
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ type LiteralLevel struct {
 func (l *LiteralLevel) GetType() (*DataType, error) {
 	switch l.Kind {
 	case LParentheses:
-		// todo expr.GetType()
+		return l.ExprLevel.GetType()
 	case LIdent:
 		v, ok := isDefinedVariable(currentFunction, l.Ident)
 		if !ok {
@@ -39,14 +39,10 @@ func (l *LiteralLevel) GetType() (*DataType, error) {
 	case LAtom:
 		return l.Atom.GetType()
 	case LList:
-		// todo
+		return l.ListLevel.GetType()
 	case LDict:
-		// todo
+		return l.DictLevel.GetType()
 	}
-	// { x, x, x }
-	// [ x, x, x ]
-	// からどうやって型を読み出すのか。
-	// 全ての一致を確認したのち型を返すことはできるが。
 	return nil, fmt.Errorf("literalLv %d is not support getType", l.Kind)
 }
 

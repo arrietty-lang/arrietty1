@@ -17,7 +17,7 @@ func NewVarDecl(node *parse.Node) (*VarDecl, error) {
 		return nil, NewAlreadyDefinedErr(currentFunction, ident)
 	}
 
-	typ, err := NewDataType(node.Rhs)
+	typ, err := NewDataTypeFromNode(node.Rhs)
 	if err != nil {
 		return nil, err
 	}

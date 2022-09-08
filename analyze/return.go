@@ -12,7 +12,7 @@ type Return struct {
 func NewReturn(node *parse.Node) (*Return, error) {
 	retType, _ := isDefinedFunc(currentFunction)
 
-	if node.Children == nil {
+	if node.Children == nil || node.Children[0] == nil {
 		// voidではないのに、戻り値が提供されていない
 		if retType.Type != TVoid {
 			return nil, fmt.Errorf("return value is not provided")
