@@ -16,15 +16,48 @@ func TestInterpret(t *testing.T) {
 		expectErr error
 	}{
 		{
-			"1",
+			"int",
 			"int main() {return 1;}",
 			NewIntObject(1),
+			nil,
+		},
+		{
+			"float",
+			"float main() {return 1.0;}",
+			NewFloatObject(1),
+			nil,
+		},
+		{
+			"string",
+			"string main() {return \"shu-ka sai-to\";}",
+			NewStringObject("shu-ka sai-to"),
+			nil,
+		},
+		{
+			"true",
+			"bool main() {return true;}",
+			NewTrueObject(),
+			nil,
+		},
+		{
+			"false",
+			"bool main() {return false;}",
+			NewFalseObject(),
+			nil,
+		},
+		{
+			"null",
+			"void main() {return null;}",
+			NewNullObject(),
 			nil,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				analyze.CleanUp()
+			})
 			tokens, err := tokenize.Tokenize(tt.in)
 			if err != nil {
 				t.Fatalf("failed to tokenize: %v", err)
@@ -44,6 +77,7 @@ func TestInterpret(t *testing.T) {
 
 			assert.Equal(t, tt.expectErr, err)
 			assert.Equal(t, tt.expectObj, obj)
+
 		})
 	}
 }
