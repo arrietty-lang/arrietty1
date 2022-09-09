@@ -62,17 +62,27 @@ func newAccessLevelIndex(node *parse.Node) (*AccessLevel, error) {
 	if err != nil {
 		return nil, err
 	}
+	indexType, err := index.GetType()
+	if err != nil {
+		return nil, err
+	}
 
-	var indexType = ACUnknownIndex
+	var indexKind = ACUnknownIndex
 
 	// 左辺をidentとして読み取ることができたら、シンボルテーブルから型データを取り出す
 	if src.Kind == ACLiteralLevel && src.LiteralLevel.Kind == LIdent {
-		typ, ok := isDefinedVariable(currentFunction, src.LiteralLevel.Ident)
+		srcType, ok := isDefinedVariable(currentFunction, src.LiteralLevel.Ident)
 		if ok {
-			if typ.Type == TList {
-				indexType = ACListIndex
-			} else if typ.Type == TDict {
-				indexType = ACDictIndex
+			if srcType.Type == TList {
+				if indexType.Type != TInt {
+					return nil, fmt.Errorf("list index expect int, but got %s", indexType.String())
+				}
+				indexKind = ACListIndex
+			} else if srcType.Type == TDict {
+				if !isSameType(srcType.Key, indexType) {
+					return nil, fmt.Errorf("dict key type is not match: expect %s, but got %s", srcType.Key.String(), indexType.String())
+				}
+				indexKind = ACDictIndex
 			}
 		}
 	}
@@ -84,13 +94,19 @@ func newAccessLevelIndex(node *parse.Node) (*AccessLevel, error) {
 			return nil, err
 		}
 		if t.Type == TList {
-			indexType = ACListIndex
+			if indexType.Type != TInt {
+				return nil, fmt.Errorf("list index expect int, but got %s", indexType.String())
+			}
+			indexKind = ACListIndex
 		} else if t.Type == TDict {
-			indexType = ACDictIndex
+			if !isSameType(indexType, t.Key) {
+				return nil, fmt.Errorf("dict key type is not match: expect %s, but got %s", t.Key.String(), indexType.String())
+			}
+			indexKind = ACDictIndex
 		} else {
 			log.Fatalf("unsupported access ")
 		}
 	}
 
-	return &AccessLevel{Kind: indexType, Src: src, Index: index}, nil
+	return &AccessLevel{Kind: indexKind, Src: src, Index: index}, nil
 }
