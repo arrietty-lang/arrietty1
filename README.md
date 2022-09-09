@@ -82,36 +82,7 @@ white   = " " | "\t"
 newline = "\n"
 ```
 
-### Node implementation
-- [x] Function
-- [x] Block
-- [x] Return 
-- [x] If
-- [x] IfElse
-- [x] While
-- [x] For
-- [x] Assign
-- [x] Not
-- [x] And
-- [x] Or
-- [x] Eq
-- [x] Ne
-- [x] Lt
-- [x] Le
-- [x] Gt
-- [x] Ge
-- [x] Add
-- [x] Sub
-- [x] Mul
-- [x] Div
-- [x] Mod
-- [x] Ident
-- [x] Call
-- [x] Float, Int, String
-- [x] Array, Dict, KV
-- [ ] Raw
-- [x] True, False, Null
-- [x] Args
-- [x] Params
-- [x] Access(Dict, Array)
-- [ ] Access(String)
+### implementation
+- [x] 即値
+- [ ] 辞書
+- [ ] リスト
