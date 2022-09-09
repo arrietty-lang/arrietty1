@@ -20,7 +20,9 @@ func evalLiteral(mem *Memory, literalLv *analyze.LiteralLevel) (*Object, error) 
 	case analyze.LAtom:
 		return ConvertAtomToObject(literalLv.Atom)
 	case analyze.LList:
+		return ConvertListToObject(mem, literalLv.ListLevel)
 	case analyze.LDict:
+		return ConvertDictToObject(mem, literalLv.DictLevel)
 	}
 	return nil, fmt.Errorf("unimplemented: %s", literalLv.Kind.String())
 }

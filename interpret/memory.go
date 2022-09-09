@@ -11,6 +11,13 @@ type Memory struct {
 }
 
 func NewMemory(vars map[string]*Object, fs map[string]*analyze.TopLevel) *Memory {
+	if vars == nil {
+		vars = map[string]*Object{}
+	}
+	if fs == nil {
+		fs = map[string]*analyze.TopLevel{}
+	}
+
 	return &Memory{
 		Variables:    vars,
 		RawFunctions: fs,
@@ -34,7 +41,7 @@ func (m *Memory) DeclareVar(ident string) error {
 	return nil
 }
 
-func (m *Memory) AssignVar(ident string, obj *Object, overwrite bool) error {
+func (m *Memory) AssignVar(ident string, obj *Object, allowOverwrite bool) error {
 	v, ok := m.Variables[ident]
 	// 宣言されていない
 	if !ok {
@@ -48,13 +55,13 @@ func (m *Memory) AssignVar(ident string, obj *Object, overwrite bool) error {
 	}
 
 	// 値が入っているが許可されているので上書きする
-	if v != nil && overwrite {
+	if v != nil && allowOverwrite {
 		m.Variables[ident] = obj
 		return nil
 	}
 
 	// 宣言されていて、値が代入されている
-	return fmt.Errorf("can't assign obj to %s because overwrite flag is false", ident)
+	return fmt.Errorf("can't assign obj to %s because allowOverwrite flag is false", ident)
 }
 
 func (m *Memory) GetVar(ident string) (*Object, error) {

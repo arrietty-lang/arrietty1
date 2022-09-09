@@ -14,6 +14,21 @@ type Object struct {
 	L    []*Object
 }
 
+func (o *Object) AssignWithIndex(index *Object, value *Object) error {
+	if o.Kind == ODict {
+		o.D[index.S] = value
+		return nil
+	}
+	if o.Kind == OList {
+		if len(o.L) <= index.I {
+			return fmt.Errorf("index out of range")
+		}
+		o.L[index.I] = value
+		return nil
+	}
+	return fmt.Errorf("%s can't assgin value throw index", o.Kind.String())
+}
+
 func NewIntObject(i int) *Object {
 	return &Object{Kind: OInt, I: i}
 }
@@ -31,6 +46,12 @@ func NewFalseObject() *Object {
 }
 func NewNullObject() *Object {
 	return &Object{Kind: ONull}
+}
+func NewListObject(items []*Object) *Object {
+	return &Object{Kind: OList, L: items}
+}
+func NewDictObject(kvs map[string]*Object) *Object {
+	return &Object{Kind: ODict, D: kvs}
 }
 
 func ConvertAtomToObject(atom *analyze.Atom) (*Object, error) {
@@ -51,9 +72,26 @@ func ConvertAtomToObject(atom *analyze.Atom) (*Object, error) {
 	return nil, fmt.Errorf("unimplemented: %s", atom.Kind.String())
 }
 
-func ConvertDictToObject() {
-	// todo
+func ConvertDictToObject(mem *Memory, dictLv *analyze.DictLevel) (*Object, error) {
+	d := &Object{Kind: ODict}
+	d.D = map[string]*Object{}
+	for _, kvLv := range dictLv.KVs {
+		value, err := evalUnary(mem, kvLv.Value)
+		if err != nil {
+			return nil, err
+		}
+		d.D[kvLv.Key] = value
+	}
+	return d, nil
 }
-func ConvertListToObject() {
-	// todo
+func ConvertListToObject(mem *Memory, listLv *analyze.ListLevel) (*Object, error) {
+	l := &Object{Kind: OList}
+	for _, unaryLv := range listLv.Items {
+		item, err := evalUnary(mem, unaryLv)
+		if err != nil {
+			return nil, err
+		}
+		l.L = append(l.L, item)
+	}
+	return l, nil
 }
