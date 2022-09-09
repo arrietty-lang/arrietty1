@@ -10,3 +10,15 @@ const (
 	REGt
 	REGe
 )
+
+var rKind = [...]string{
+	REAddLevel: "REAddLevel",
+	RELt:       "RELt",
+	RELe:       "RELe",
+	REGt:       "REGt",
+	REGe:       "REGe",
+}
+
+func (r RelationalLevelKind) String() string {
+	return rKind[r]
+}

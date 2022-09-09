@@ -8,3 +8,13 @@ const (
 	ANAnd
 	ANOr
 )
+
+var anKind = [...]string{
+	ANEqualityLevel: "ANEqualityLevel",
+	ANAnd:           "ANAnd",
+	ANOr:            "ANOr",
+}
+
+func (a AndOrLevelKind) String() string {
+	return anKind[a]
+}

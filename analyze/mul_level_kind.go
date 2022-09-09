@@ -9,3 +9,14 @@ const (
 	MUDiv
 	MUMod
 )
+
+var mKind = [...]string{
+	MUUnaryLevel: "MUUnaryLevel",
+	MUMul:        "MUMul",
+	MUDiv:        "MUDiv",
+	MUMod:        "MUMod",
+}
+
+func (m MulLevelKind) String() string {
+	return mKind[m]
+}

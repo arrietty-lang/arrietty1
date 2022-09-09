@@ -11,3 +11,16 @@ const (
 	LList
 	LDict
 )
+
+var lKind = [...]string{
+	LParentheses: "LParentheses",
+	LIdent:       "LIdent",
+	LCall:        "LCall",
+	LAtom:        "LAtom",
+	LList:        "LList",
+	LDict:        "LDict",
+}
+
+func (l LiteralLevelKind) String() string {
+	return lKind[l]
+}
