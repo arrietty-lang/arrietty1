@@ -29,7 +29,7 @@ func NewReturn(node *parse.Node) (*Return, error) {
 		return nil, err
 	}
 
-	if !isSameType(retType, t) {
+	if !isAssignable(retType, t) {
 		return nil, fmt.Errorf("return type miss match want:%s, found:%s", retType.String(), t.String())
 	}
 
