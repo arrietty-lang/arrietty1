@@ -12,3 +12,5 @@ jobs:
       - run: |
           go test ./tokenize
           go test ./parse
+          # go test ./analyze
+          go test ./interpret
