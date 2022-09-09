@@ -11,3 +11,16 @@ const (
 	AFalse
 	ANull
 )
+
+var atomKind = [...]string{
+	AFloat:  "AFloat",
+	AInt:    "AInt",
+	AString: "AString",
+	ATrue:   "ATrue",
+	AFalse:  "AFalse",
+	ANull:   "ANull",
+}
+
+func (a AtomKind) String() string {
+	return atomKind[a]
+}
