@@ -1,5 +1,12 @@
 # Arrietty
 
+### 手順
+- tokenize  -> 文字列をトークンに
+- parse     -> トークンを構文解析しParseTreeに
+- analyze   -> ParseTreeを意味解析しASTを作る(多分)
+- interpret -> ...
+- compile   -> ...
+
 ### Reserved Idents (keyword)
 ```text
 return, if, else, while, for,
@@ -10,15 +17,19 @@ print, len, type
 ### Grammar
 ```text
 program    = toplevel*
-toplevel   = ident "(" funcParams? ")" block
+toplevel   = types ident "(" funcParams? ")" block
+           | comment
 block      = "{" stmt* "}"
 stmt       =  expr ";"
-           | "return" expr ";"
+           | "return" expr? ";"
            | "if" "(" expr ")" block ("else" block)?
            | "while" "(" expr ")" block
            | "for" "(" expr? ";" expr? ";" expr? ")" block
+           | comment
 expr       = assign
-assign     = andor ("=" andor)?
+assign     = "var" ident types ("=" andor)?   // varDecl (and assign)
+           | ident ":=" andor                 // short varDecl
+           | andor ("=" andor)?               // andor (or assign)
 andor      = equality ("&&" equality | "||" equality)*
 equality   = relational ("==" relational | "!=" relational)*
 relational = add ("<" add | "<=" add | ">" add | ">=" add)*
@@ -34,28 +45,28 @@ literal = "(" expr ")"
         | int
         | string
         | raw
-        | array
+        | list
         | dict
         | bool
         | null
 
 
-data-type  = "float" | "int" | "string" | "bool" | "void"
+types      = "float" | "int" | "string" | "bool" | "void"
            | ident
-           | "[" expr? "]" data-type
-           | "dict" "[" data-type "]" data-type
+           | "[" int? "]" types
+           | "dict" "[" types "]" types
 
 
 callArgs   = expr ("," expr)*
-funcParams = ident ("," ident)*
+funcParams = ident types ("," ident types)*
 
 
-array = "[" primary? "]"
-      | "[" primary ("," primary)* "]"
+list = "[" unary? "]"
+      | "[" unary ("," unary)* "]"
 
 dict  = "{" kv? "}"
       | "{" kv ("," kv)* "}"
-kv    = string ":" primary
+kv    = string ":" unary
 
 ident   = [a-zA-Z_][a-zA-Z0-9_]*
 float   = [0-9]+[0-9.][0-9]+
@@ -66,7 +77,7 @@ bool    = "true" | "false"
 null    = "null"
 
 
-comment = "//" any-character*
+comment = "#" any-character*
 white   = " " | "\t"
 newline = "\n"
 ```

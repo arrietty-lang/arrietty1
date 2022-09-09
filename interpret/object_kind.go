@@ -4,6 +4,13 @@ type ObjectKind int
 
 const (
 	_ ObjectKind = iota
-	ObjLiteral
-	ObjFn
+	OFloat
+	OInt
+	OString
+	OTrue
+	OFalse
+	ONull
+
+	ODict
+	OList
 )

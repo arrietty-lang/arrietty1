@@ -14,7 +14,7 @@ const (
 	Float
 	Int
 	String
-	Raw
+	RawString
 	True // 10
 	False
 	Null
@@ -46,30 +46,66 @@ const (
 	Ge // >= 35
 	Le // <=
 
-	Assign    // =
-	AddAssign // +=
-	SubAssign // -=
-	MulAssign // *= 40
-	DivAssign // /=
-	ModAssign // %=
+	Assign      // =
+	AddAssign   // +=
+	SubAssign   // -=
+	MulAssign   // *= 40
+	DivAssign   // /=
+	ModAssign   // %=
+	ColonAssign // :=
 
 	And // &&
 	Or  // ||
 	Not // ! 45
 	operatorsEnd
-
-	keywordBegin // 予約後
-	KWFor
-	KWWhile
-	KWIf // 50
-	KWElse
-	KWReturn
-
-	KWDict
-	KWFloat
-	KWInt // 55
-	KWString
-	KWBool
-	KWVoid
-	keywordEnd
 )
+
+var tokenKinds = [...]string{
+	Eof:         "Eof",
+	Comment:     "Comment",
+	White:       "White",
+	NewLine:     "NewLine",
+	Ident:       "Ident",
+	Float:       "Float",
+	Int:         "Int",
+	String:      "String",
+	RawString:   "RawString",
+	True:        "True",
+	False:       "False",
+	Null:        "Null",
+	Lrb:         "Lrb",
+	Rrb:         "Rrb",
+	Lsb:         "Lsb",
+	Rsb:         "Rsb",
+	Lcb:         "Lcb",
+	Rcb:         "Rcb",
+	Dot:         "Dot",
+	Comma:       "Comma",
+	Colon:       "Colon",
+	Semi:        "Semi",
+	Add:         "Add",
+	Sub:         "Sub",
+	Mul:         "Mul",
+	Div:         "Div",
+	Mod:         "Mod",
+	Eq:          "Eq",
+	Ne:          "Ne",
+	Gt:          "Gt",
+	Lt:          "Lt",
+	Ge:          "Ge",
+	Le:          "Le",
+	Assign:      "Assign",
+	AddAssign:   "AddAssign",
+	SubAssign:   "SubAssign",
+	MulAssign:   "MulAssign",
+	DivAssign:   "DivAssign",
+	ModAssign:   "ModAssign",
+	ColonAssign: "ColonAssign",
+	And:         "And",
+	Or:          "Or",
+	Not:         "Not",
+}
+
+func (t TokenKind) String() string {
+	return tokenKinds[t]
+}

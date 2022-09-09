@@ -6,21 +6,21 @@ type Token struct {
 	Kind TokenKind
 	Pos  *Position
 
-	Str      string
-	NumFloat float64
-	NumInt   int
+	S string
+	F float64
+	I int
 
 	Next *Token
 }
 
 func NewToken(kind TokenKind, pos *Position, str string, nf float64, ni int) *Token {
 	return &Token{
-		Kind:     kind,
-		Pos:      pos,
-		Str:      str,
-		NumFloat: nf,
-		NumInt:   ni,
-		Next:     nil,
+		Kind: kind,
+		Pos:  pos,
+		S:    str,
+		F:    nf,
+		I:    ni,
+		Next: nil,
 	}
 }
 
@@ -84,6 +84,8 @@ func NewOpSymbol(cur *Token, pos *Position, str string) *Token {
 		tok = NewToken(DivAssign, pos, str, 0, 0)
 	case "%=":
 		tok = NewToken(ModAssign, pos, str, 0, 0)
+	case ":=":
+		tok = NewToken(ColonAssign, pos, str, 0, 0)
 
 	case "&&":
 		tok = NewToken(And, pos, str, 0, 0)
@@ -101,38 +103,12 @@ func NewOpSymbol(cur *Token, pos *Position, str string) *Token {
 func NewIdent(cur *Token, pos *Position, str string) *Token {
 	var tok *Token
 	switch str {
-	case "for":
-		tok = NewToken(KWFor, pos, str, 0, 0)
-	case "while":
-		tok = NewToken(KWWhile, pos, str, 0, 0)
-	case "if":
-		tok = NewToken(KWIf, pos, str, 0, 0)
-	case "else":
-		tok = NewToken(KWElse, pos, str, 0, 0)
-	case "return":
-		tok = NewToken(KWReturn, pos, str, 0, 0)
-
-	// data types
-	case "dict":
-		tok = NewToken(KWDict, pos, str, 0, 0)
-	case "float":
-		tok = NewToken(KWFloat, pos, str, 0, 0)
-	case "int":
-		tok = NewToken(KWInt, pos, str, 0, 0)
-	case "string":
-		tok = NewToken(KWString, pos, str, 0, 0)
-	case "bool":
-		tok = NewToken(KWBool, pos, str, 0, 0)
-	case "void":
-		tok = NewToken(KWVoid, pos, str, 0, 0)
-
 	case "true":
 		tok = NewToken(True, pos, str, 0, 0)
 	case "false":
 		tok = NewToken(False, pos, str, 0, 0)
 	case "null":
 		tok = NewToken(Null, pos, str, 0, 0)
-
 	default:
 		tok = NewToken(Ident, pos, str, 0, 0)
 	}
@@ -161,7 +137,7 @@ func NewInt(cur *Token, pos *Position, n int) *Token {
 func NewString(cur *Token, pos *Position, str string, isRaw bool) *Token {
 	var tok *Token
 	if isRaw {
-		tok = NewToken(Raw, pos, str, 0, 0)
+		tok = NewToken(RawString, pos, str, 0, 0)
 	} else {
 		tok = NewToken(String, pos, str, 0, 0)
 	}

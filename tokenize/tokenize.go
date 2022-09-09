@@ -1,7 +1,6 @@
 package tokenize
 
 import (
-	"log"
 	"strconv"
 	"unicode"
 )
@@ -27,7 +26,7 @@ func init() {
 	compositeOpSymbols = []string{
 		"==", "!=", ">=", "<=",
 		"+=", "-=", "*=", "/=", "%=",
-		"&&", "||",
+		"&&", "||", ":=",
 	}
 }
 
@@ -53,6 +52,10 @@ func isNotEof() bool {
 }
 
 func consumeComment() string {
+	// skip "#"
+	lat++
+	wat++
+
 	var s string
 	for isNotEof() {
 		if userInput[wat] == '\n' {
@@ -166,14 +169,14 @@ inputLoop:
 	for isNotEof() {
 		// white
 		if userInput[wat] == ' ' || userInput[wat] == '\t' {
-			//_ = NewPosition(lno, lat, wat)
+			_ = NewPosition(lno, lat, wat)
 			_ = consumeWhite()
-			//cur = NewWhite(cur, pos, s)
+			// cur = NewWhite(cur, pos, s)
 			continue
 		}
 		// newline
 		if userInput[wat] == '\n' {
-			//_ = NewNL(cur, NewPosition(lno, lat, wat), "\n")
+			// cur = NewNL(cur, NewPosition(lno, lat, wat), "\n")
 			lno++
 			lat = 0
 			wat++
@@ -181,9 +184,9 @@ inputLoop:
 		}
 		// comment
 		if userInput[wat] == '#' {
-			//	pos := NewPosition(lno, lat, wat)
-			_ = consumeComment()
-			//	cur = NewComment(cur, pos, comment)
+			pos := NewPosition(lno, lat, wat)
+			s := consumeComment()
+			cur = NewComment(cur, pos, s)
 			continue
 		}
 		// op symbols
@@ -232,7 +235,7 @@ inputLoop:
 			}
 		}
 
-		log.Fatalf("[%d:%d] unexpected character: %s", lno, lat, string(userInput[wat]))
+		return nil, NewUnexpectedCharacterErr(userInput[wat], NewPosition(lno, lat, wat))
 	}
 
 	cur = NewEof(cur, NewPosition(lno, lat, wat))
