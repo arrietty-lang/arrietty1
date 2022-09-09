@@ -9,6 +9,7 @@ type Assignment struct {
 	Kind     AssignmentKind
 	Ident    string
 	AccessLv *AccessLevel
+	Inline   bool // 宣言と代入が１行で行われている時にそのことをインタプリタに教えるために使う
 
 	Value *AndOrLevel
 }
@@ -49,7 +50,7 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 			return nil, err
 		}
 
-		return &Assignment{Kind: ToDefinedIdent, Ident: ident, Value: val}, nil
+		return &Assignment{Kind: ToDefinedIdent, Ident: ident, Value: val, Inline: true}, nil
 	}
 
 	switch node.Lhs.Kind {
@@ -77,7 +78,7 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 			return nil, fmt.Errorf("[assign(to var-decl)] type miss match L:%s  R:%s", decl.Type.String(), t.String())
 		}
 
-		return &Assignment{Kind: ToDefinedIdent, Ident: decl.Ident, Value: val}, nil
+		return &Assignment{Kind: ToDefinedIdent, Ident: decl.Ident, Value: val, Inline: true}, nil
 
 	case parse.Ident:
 		// ident = RHS
@@ -105,7 +106,7 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		return &Assignment{Kind: ToDefinedIdent, Ident: ident, Value: val}, nil
 	case parse.Access:
 
-		var assignKind AssignmentKind
+		var assignKind AssignmentKind = ToUnknown
 
 		acc, err := NewAccessLevel(node.Lhs)
 		if err != nil {
@@ -116,9 +117,9 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		if err != nil {
 			return nil, err
 		}
-		if destinationType.Type == TList {
+		if acc.Kind == ACListIndex {
 			assignKind = ToListIndex
-		} else if destinationType.Type == TDict {
+		} else if acc.Kind == ACDictIndex {
 			assignKind = ToDictKey
 		}
 

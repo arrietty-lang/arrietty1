@@ -4,6 +4,7 @@ type AssignmentKind int
 
 const (
 	_ AssignmentKind = iota
+	ToUnknown
 	ToDefinedIdent
 	ToUndefinedIdent
 	ToDictKey
@@ -11,6 +12,7 @@ const (
 )
 
 var assKind = [...]string{
+	ToUnknown:        "ToUnknown",
 	ToDefinedIdent:   "ToDefinedIdent",
 	ToUndefinedIdent: "ToUndefinedIdent",
 	ToDictKey:        "ToDictKey",
