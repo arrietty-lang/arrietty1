@@ -9,3 +9,14 @@ const (
 	ToDictKey
 	ToListIndex
 )
+
+var assKind = [...]string{
+	ToDefinedIdent:   "ToDefinedIdent",
+	ToUndefinedIdent: "ToUndefinedIdent",
+	ToDictKey:        "ToDictKey",
+	ToListIndex:      "ToListIndex",
+}
+
+func (a AssignmentKind) String() string {
+	return assKind[a]
+}
