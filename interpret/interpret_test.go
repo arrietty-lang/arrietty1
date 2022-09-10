@@ -197,6 +197,27 @@ func TestInterpret(t *testing.T) {
 			NewReturnValue(NewIntObject(1000)),
 			nil,
 		},
+		{
+			"call",
+			`string hello(name string) { return "hello, " + name; } void main() { hello("john"); }`,
+			NewReturnValue(NewStringObject("hello, john")),
+			nil,
+		},
+		//{
+		//	"tarai",
+		//	`int tarai(x int, y int, z int) {
+		//			if (x > y) {
+		//				return tarai(tarai(x-1, y, z), tarai(y-1, z, x), tarai(z-1, x, y));
+		//			} else {
+		//				return y;
+		//			}
+		//		}
+		//		int main() {
+		//			return tarai(14, 7, 0);
+		//		}`,
+		//	NewReturnValue(NewIntObject(14)),
+		//	nil,
+		//},// 4分半かかるから使うとgithub action credit枯渇する
 	}
 
 	for _, tt := range tests {
