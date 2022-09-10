@@ -48,6 +48,18 @@ func newEqualityLevelEq(node *parse.Node) (*EqualityLevel, error) {
 		return nil, err
 	}
 
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
+	}
+
 	return &EqualityLevel{Kind: EQEqual, LHS: lhs, RHS: rhs}, nil
 }
 
@@ -60,6 +72,18 @@ func newEqualityLevelNe(node *parse.Node) (*EqualityLevel, error) {
 	rhs, err := NewEqualityLevel(node.Rhs)
 	if err != nil {
 		return nil, err
+	}
+
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
 	}
 
 	return &EqualityLevel{Kind: EQNotEqual, LHS: lhs, RHS: rhs}, nil

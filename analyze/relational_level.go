@@ -52,6 +52,18 @@ func newRelationalLevelLt(node *parse.Node) (*RelationalLevel, error) {
 		return nil, err
 	}
 
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
+	}
+
 	return &RelationalLevel{Kind: RELt, LHS: lhs, RHS: rhs}, nil
 }
 
@@ -64,6 +76,18 @@ func newRelationalLevelLe(node *parse.Node) (*RelationalLevel, error) {
 	rhs, err := NewRelationalLevel(node.Rhs)
 	if err != nil {
 		return nil, err
+	}
+
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
 	}
 
 	return &RelationalLevel{Kind: RELe, LHS: lhs, RHS: rhs}, nil
@@ -80,6 +104,18 @@ func newRelationalLevelGt(node *parse.Node) (*RelationalLevel, error) {
 		return nil, err
 	}
 
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
+	}
+
 	return &RelationalLevel{Kind: REGt, LHS: lhs, RHS: rhs}, nil
 }
 
@@ -92,6 +128,18 @@ func newRelationalLevelGe(node *parse.Node) (*RelationalLevel, error) {
 	rhs, err := NewRelationalLevel(node.Rhs)
 	if err != nil {
 		return nil, err
+	}
+
+	lhsType, err := lhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	rhsType, err := rhs.GetType()
+	if err != nil {
+		return nil, err
+	}
+	if !isSameType(lhsType, rhsType) {
+		return nil, fmt.Errorf("type miss match L:%s, R:%s", lhsType.String(), rhsType.String())
 	}
 
 	return &RelationalLevel{Kind: REGe, LHS: lhs, RHS: rhs}, nil
