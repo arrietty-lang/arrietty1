@@ -34,6 +34,9 @@ func evalAdd(mem *Memory, addLv *analyze.AddLevel) (*Object, error) {
 		if lhs.Kind == OFloat && rhs.Kind == OInt {
 			return NewFloatObject(lhs.F + float64(rhs.I)), nil
 		}
+		if lhs.Kind == OString {
+			return NewStringObject(lhs.S + rhs.S), nil
+		}
 	case analyze.ADSub:
 		lhs, err := evalAdd(mem, addLv.LHS)
 		if err != nil {

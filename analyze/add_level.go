@@ -37,6 +37,9 @@ func (a *AddLevel) GetType() (*DataType, error) {
 		if lhs.Type == TInt && rhs.Type == TInt {
 			return lhs, nil
 		}
+		if lhs.Type == TString {
+			return lhs, nil
+		}
 	}
 	return nil, fmt.Errorf("add type error")
 }
