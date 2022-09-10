@@ -20,9 +20,6 @@ func ExecFunction(mem *Memory, f *analyze.FuncDef, args []*analyze.ExprLevel) (*
 	// 関数で発生したデータを保存するための領域を作成
 	localMem := NewMemory(nil, nil)
 
-	// 関数の戻り値
-	var ret *Object = nil
-
 	// パラメーターを宣言
 	for _, param := range f.Params {
 		err := localMem.DeclareVar(param.Ident)
@@ -45,17 +42,5 @@ func ExecFunction(mem *Memory, f *analyze.FuncDef, args []*analyze.ExprLevel) (*
 	}
 
 	// bodyを実行
-	for _, stmt := range f.Body {
-		// 1行ごとに結果が返ってくる
-		result, err := evalStmt(localMem, stmt)
-		if err != nil {
-			return nil, err
-		}
-		// もしReturnが実施されたなら結果を返すために保存
-		if stmt.Kind == analyze.STReturn {
-			ret = result
-		}
-	}
-
-	return ret, nil
+	return evalBlock(localMem, f.Body)
 }
