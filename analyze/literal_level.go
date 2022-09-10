@@ -100,14 +100,16 @@ func newLiteralLevelIdent(node *parse.Node) (*LiteralLevel, error) {
 }
 
 func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
-	if node.Kind != parse.Args {
-		return nil, NewUnexpectNodeErr(node)
+	argsNode := node.Children[1]
+	if argsNode.Kind != parse.Args {
+		return nil, NewUnexpectNodeErr(argsNode)
 	}
 
-	ident := node.S
+	identNode := node.Children[0]
+	ident := identNode.S
 
 	var args []*ExprLevel
-	for _, argNode := range node.Children {
+	for _, argNode := range argsNode.Children {
 		arg, err := NewExprLevel(argNode)
 		if err != nil {
 			return nil, err
