@@ -5,10 +5,6 @@ import (
 	"github.com/x0y14/arrietty/analyze"
 )
 
-func ret(mem *Memory, stmtLv *analyze.StmtLevel) (*Object, error) {
-	return evalExpr(mem, stmtLv.Return.Value)
-}
-
 func evalStmt(mem *Memory, stmtLv *analyze.StmtLevel) (*Object, error) {
 	switch stmtLv.Kind {
 	case analyze.STComment:
@@ -16,12 +12,13 @@ func evalStmt(mem *Memory, stmtLv *analyze.StmtLevel) (*Object, error) {
 	case analyze.STExprLevel:
 		return evalExpr(mem, stmtLv.ExprLevel)
 	case analyze.STReturn:
-		return ret(mem, stmtLv)
-
+		return statReturn(mem, stmtLv.Return)
 	case analyze.STIfElse:
+		return statIfElse(mem, stmtLv.IfElse)
 	case analyze.STWhile:
+		return statWhile(mem, stmtLv.While)
 	case analyze.STFor:
-
+		return statFor(mem, stmtLv.For)
 	}
 	return nil, fmt.Errorf("unimplemented: %s", stmtLv.Kind.String())
 }
