@@ -5,11 +5,14 @@ var currentFunction string
 
 func init() {
 	symbols = map[string]map[string]*DataType{}
+	setBuiltIn() // 最初につける
 }
 
-func CleanUp() {
-	symbols = map[string]map[string]*DataType{}
-	currentFunction = ""
+func setBuiltIn() {
+	symbols["strlen"] = map[string]*DataType{
+		"":  {Type: TInt},    // 戻り値
+		"v": {Type: TString}, // 引数1
+	}
 }
 
 func defineVar(funcScope string, id string, dataType *DataType) error {

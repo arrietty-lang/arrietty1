@@ -246,27 +246,9 @@ func TestInterpret(t *testing.T) {
 			nil,
 		},
 		{
-			"any",
-			`any main() { return !(true||false); }`,
-			NewReturnValue(NewFalseObject()),
-			nil,
-		},
-		{
-			"any",
-			`string plusHello(v any) {return v+", hello";} string main() {return plusHello("john");}`,
-			NewReturnValue(NewStringObject("john, hello")),
-			nil,
-		},
-		{
-			"any",
-			`bool list_s(v []any) { return v[0]=="zero"; } bool list_i(v []any) { return v[0] == 0; } []bool main() { return [list_s(["zero", "one"]), list_i([0, 1])]; }`,
-			NewReturnValue(NewListObject([]*Object{NewTrueObject(), NewTrueObject()})),
-			nil,
-		},
-		{
-			"any == float",
-			`any f() {return 1.0;} bool main() { return 1.0 == f(); }`,
-			NewReturnValue(NewTrueObject()),
+			"built-in str_len",
+			`int main() { return 1+strlen("a"); }`,
+			NewReturnValue(NewIntObject(2)),
 			nil,
 		},
 		//{
