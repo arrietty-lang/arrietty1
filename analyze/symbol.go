@@ -13,6 +13,10 @@ func setBuiltIn() {
 		"":  {Type: TInt},    // 戻り値
 		"v": {Type: TString}, // 引数1
 	}
+	symbols["len"] = map[string]*DataType{
+		"":  {Type: TInt},
+		"v": {Type: TList, Item: &DataType{Type: TAny}},
+	}
 }
 
 func defineVar(funcScope string, id string, dataType *DataType) error {
