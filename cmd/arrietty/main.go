@@ -7,6 +7,7 @@ import (
 	"github.com/x0y14/arrietty/tokenize"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -15,7 +16,17 @@ func main() {
 		log.Fatalf("too many args")
 	}
 
-	tokens, err := tokenize.Tokenize(args[0])
+	filepath := args[0]
+	if !strings.HasSuffix(filepath, ".arr") {
+		log.Fatalf("Please specify the path of the file ending with .arr")
+	}
+
+	src, err := os.ReadFile(filepath)
+	if err != nil {
+		log.Fatalf("faield to read file: %v", err)
+	}
+
+	tokens, err := tokenize.Tokenize(string(src))
 	if err != nil {
 		log.Fatalf("failed to tokenize: %v", err)
 	}
