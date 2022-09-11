@@ -282,6 +282,20 @@ func TestInterpret(t *testing.T) {
 			})),
 			nil,
 		},
+		{
+			"built-in print",
+			"void main() {" +
+				"	var s []string = [];" +
+				"	append(s, \"hello\");" +
+				"	append(s, \"world\");" +
+				"	append(s, \"!\");" +
+				"	for (i:=0; i<len(s); i=i+1) {" +
+				"		print(s[i] + \"\n\");" +
+				"	}" +
+				"}",
+			nil,
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
