@@ -49,6 +49,7 @@ const (
 	False
 	Void
 	Null
+	Any
 
 	Args
 	Params
@@ -103,6 +104,7 @@ var nodeKinds = [...]string{
 	False:        "False",
 	Void:         "Void",
 	Null:         "Null",
+	Any:          "Any",
 	Args:         "Args",
 	Params:       "Params",
 	Param:        "Param",
