@@ -608,6 +608,9 @@ func types() (*Node, error) {
 	if v_ := consumeIdent("void"); v_ != nil {
 		return NewNodeWithChildren(v_.Pos, Void, nil), nil
 	}
+	if a_ := consumeIdent("any"); a_ != nil {
+		return NewNodeWithChildren(a_.Pos, Any, nil), nil
+	}
 
 	// list
 	if lsb_ := consume(tokenize.Lsb); lsb_ != nil {
