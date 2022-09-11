@@ -203,6 +203,48 @@ func TestInterpret(t *testing.T) {
 			NewReturnValue(NewStringObject("hello, john")),
 			nil,
 		},
+		{
+			"not true",
+			`bool main() { return !true; }`,
+			NewReturnValue(NewFalseObject()),
+			nil,
+		},
+		{
+			"not false",
+			`bool main() { return !false; }`,
+			NewReturnValue(NewTrueObject()),
+			nil,
+		},
+		{
+			"not true",
+			`bool main() { return !(1==1); }`,
+			NewReturnValue(NewFalseObject()),
+			nil,
+		},
+		{
+			"not true && true",
+			`bool main() { return !(true&&true); }`,
+			NewReturnValue(NewFalseObject()),
+			nil,
+		},
+		{
+			"not true && false",
+			`bool main() { return !(true&&false); }`,
+			NewReturnValue(NewTrueObject()),
+			nil,
+		},
+		{
+			"not true or true",
+			`bool main() { return !(true||true); }`,
+			NewReturnValue(NewFalseObject()),
+			nil,
+		},
+		{
+			"not true or false",
+			`bool main() { return !(true||false); }`,
+			NewReturnValue(NewFalseObject()),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
