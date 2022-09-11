@@ -251,6 +251,21 @@ func TestInterpret(t *testing.T) {
 			NewReturnValue(NewIntObject(2)),
 			nil,
 		},
+		{
+			"built-in len",
+			`int main() {
+					var sum int = 0;
+					sum = sum + len( [0,1,2,3,4] ); # 5
+					sum = sum + len( ["z","o","s"] ); # 8
+					sum = sum + len( [[]] ); # 9
+					sum = sum + len( [{"k1":"v1"}, {"k2":"v2"}, {}] ); # 12
+					sum = sum + len( [true, false] ); #14
+					sum = sum + len( [null, null] ); # 16
+					return sum;
+				}`,
+			NewReturnValue(NewIntObject(16)),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
