@@ -7,11 +7,6 @@ func init() {
 	symbols = map[string]map[string]*DataType{}
 }
 
-func CleanUp() {
-	symbols = map[string]map[string]*DataType{}
-	currentFunction = ""
-}
-
 func defineVar(funcScope string, id string, dataType *DataType) error {
 	_, ok := isDefinedFunc(id)
 	if ok {
