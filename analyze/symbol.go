@@ -26,6 +26,10 @@ func setBuiltIn() {
 		"":  {Type: TVoid},
 		"v": {Type: TString},
 	}
+	symbols["itos"] = map[string]*DataType{
+		"":  {Type: TString},
+		"v": {Type: TInt},
+	}
 }
 
 func defineVar(funcScope string, id string, dataType *DataType) error {

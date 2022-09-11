@@ -3,6 +3,7 @@ package interpret
 import (
 	"fmt"
 	"github.com/x0y14/arrietty/analyze"
+	"strconv"
 )
 
 func IsBuiltInFunc(ident string) bool {
@@ -11,6 +12,7 @@ func IsBuiltInFunc(ident string) bool {
 		"len",
 		"append",
 		"print",
+		"itos",
 	}
 	for _, b := range builtIns {
 		if b == ident {
@@ -30,6 +32,8 @@ func ExecBuiltIn(ident string, mem *Memory, args []*analyze.ExprLevel) (*Object,
 		return Append(mem, args)
 	case "print":
 		return Print(mem, args)
+	case "itos":
+		return ItoS(mem, args)
 	}
 	return nil, fmt.Errorf("builtin function, %s is undefined", ident)
 }
@@ -66,4 +70,12 @@ func Print(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 	}
 	fmt.Printf(objs[0].S)
 	return nil, nil
+}
+
+func ItoS(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+	return NewStringObject(strconv.Itoa(objs[0].I)), nil
 }
