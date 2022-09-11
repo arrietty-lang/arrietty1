@@ -296,6 +296,12 @@ func TestInterpret(t *testing.T) {
 			nil,
 			nil,
 		},
+		{
+			"itos",
+			`string main() { return itos(1); }`,
+			NewReturnValue(NewStringObject("1")),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
