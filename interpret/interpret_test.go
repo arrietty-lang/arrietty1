@@ -245,6 +245,12 @@ func TestInterpret(t *testing.T) {
 			NewReturnValue(NewFalseObject()),
 			nil,
 		},
+		{
+			"built-in str_len",
+			`int main() { return 1+strlen("a"); }`,
+			NewReturnValue(NewIntObject(2)),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {

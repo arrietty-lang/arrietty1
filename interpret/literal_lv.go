@@ -12,6 +12,9 @@ func evalLiteral(mem *Memory, literalLv *analyze.LiteralLevel) (*Object, error) 
 	case analyze.LIdent:
 		return mem.GetVar(literalLv.Ident)
 	case analyze.LCall:
+		if IsBuiltInFunc(literalLv.Ident) {
+			return ExecBuiltIn(literalLv.Ident, mem, literalLv.CallArgs)
+		}
 		f, err := FileMem.GetFunc(literalLv.Ident)
 		if err != nil {
 			return nil, err
