@@ -523,6 +523,7 @@ func literal() (*Node, error) {
 		if err != nil {
 			return nil, err
 		}
+		return node, nil
 	}
 
 	if id_ := consume(tokenize.Ident); id_ != nil {
