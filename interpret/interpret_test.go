@@ -266,6 +266,22 @@ func TestInterpret(t *testing.T) {
 			NewReturnValue(NewIntObject(16)),
 			nil,
 		},
+		{
+			"built-in append",
+			`[]any main() {
+					var nums []int = [];
+					append(nums, 1);
+					append(nums, 2);
+					append(nums, "s");
+					return nums;
+				}`,
+			NewReturnValue(NewListObject([]*Object{
+				NewIntObject(1),
+				NewIntObject(2),
+				NewStringObject("s"),
+			})),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
