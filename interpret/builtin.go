@@ -8,6 +8,9 @@ import (
 func IsBuiltInFunc(ident string) bool {
 	builtIns := []string{
 		"strlen",
+		"len",
+		"append",
+		"print",
 	}
 	for _, b := range builtIns {
 		if b == ident {
@@ -21,7 +24,12 @@ func ExecBuiltIn(ident string, mem *Memory, args []*analyze.ExprLevel) (*Object,
 	switch ident {
 	case "strlen":
 		return StrLen(mem, args)
-
+	case "len":
+		return Len(mem, args)
+	case "append":
+		return Append(mem, args)
+	case "print":
+		return Print(mem, args)
 	}
 	return nil, fmt.Errorf("builtin function, %s is undefined", ident)
 }
@@ -32,4 +40,30 @@ func StrLen(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 		return nil, err
 	}
 	return NewIntObject(len(objs[0].S)), nil
+}
+
+func Len(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+	return NewIntObject(len(objs[0].L)), nil
+}
+
+func Append(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+	objs[0].L = append(objs[0].L, objs[1])
+	return nil, nil
+}
+
+func Print(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf(objs[0].S)
+	return nil, nil
 }

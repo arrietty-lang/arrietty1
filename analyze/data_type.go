@@ -15,6 +15,9 @@ type DataType struct {
 
 // 代入が可能かを確認する関数
 func isAssignable(destination *DataType, t *DataType) bool {
+	if destination.Type == TAny {
+		return true
+	}
 	// そもそも一致しない場合は弾く
 	if destination.Type != t.Type {
 		return false
@@ -101,6 +104,8 @@ func (d *DataType) String() string {
 		return fmt.Sprintf("dict[%s]%s", d.Key.String(), d.Value.String())
 	case TList:
 		return fmt.Sprintf("[%d]%s", d.Size, d.Item.String())
+	case TAny:
+		return "any"
 	}
 	return "unknown"
 }
@@ -142,6 +147,8 @@ func NewDataTypeFromNode(node *parse.Node) (*DataType, error) {
 			return nil, err
 		}
 		return &DataType{Type: TList, Size: size, Item: itemType}, nil
+	case parse.Any:
+		return &DataType{Type: TAny}, nil
 	}
 
 	return nil, NewUnsupportedTypeErr(node)
