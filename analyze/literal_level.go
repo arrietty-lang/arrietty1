@@ -111,6 +111,14 @@ func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
 		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
 	}
 
+	if argsNode == nil {
+		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
+	}
+
+	if argsNode == nil {
+		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
+	}
+
 	var args []*ExprLevel
 	for _, argNode := range argsNode.Children {
 		arg, err := NewExprLevel(argNode)
