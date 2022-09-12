@@ -347,6 +347,24 @@ func TestInterpret(t *testing.T) {
 			}),
 			nil,
 		},
+		{
+			"keys",
+			`[]string main() {
+					var d dict[string]int;
+					d = {
+						"k0": 0,
+						"k1": 1,
+						"k2": 2
+					};
+					return keys(d);
+				}`,
+			NewListObject([]*Object{
+				NewStringObject("k0"),
+				NewStringObject("k1"),
+				NewStringObject("k2"),
+			}),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
