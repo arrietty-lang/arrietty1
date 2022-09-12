@@ -17,6 +17,9 @@ func IsBuiltInFunc(ident string) bool {
 		"split",
 		"keys",
 		"stoi",
+		"as_int",
+		"as_float",
+		"as_string",
 	}
 	for _, b := range builtIns {
 		if b == ident {
@@ -44,6 +47,12 @@ func ExecBuiltIn(ident string, mem *Memory, args []*analyze.ExprLevel) (*Object,
 		return Keys(mem, args)
 	case "stoi":
 		return StoI(mem, args)
+	case "as_int":
+		return AsInt(mem, args)
+	case "as_float":
+		return AsFloat(mem, args)
+	case "as_string":
+		return AsString(mem, args)
 	}
 	return nil, fmt.Errorf("builtin function, %s is undefined", ident)
 }
@@ -128,4 +137,31 @@ func StoI(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 	}
 
 	return NewIntObject(int(i)), nil
+}
+
+func AsFloat(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewFloatObject(objs[0].F), nil
+}
+
+func AsInt(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewIntObject(objs[0].I), nil
+}
+
+func AsString(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewStringObject(objs[0].S), nil
 }
