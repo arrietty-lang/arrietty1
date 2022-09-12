@@ -365,6 +365,12 @@ func TestInterpret(t *testing.T) {
 			}),
 			nil,
 		},
+		{
+			"stoi",
+			`int main() { return stoi("1000"); }`,
+			NewIntObject(1000),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
