@@ -22,4 +22,9 @@ func setBuiltIn() {
 		"":  {Type: TString},
 		"v": {Type: TInt},
 	}
+	symbols["split"] = map[string]*DataType{
+		"":       {Type: TList, Item: &DataType{Type: TString}},
+		"target": {Type: TString},
+		"sep":    {Type: TString},
+	}
 }

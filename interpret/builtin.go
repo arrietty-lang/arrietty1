@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/x0y14/arrietty/analyze"
 	"strconv"
+	"strings"
 )
 
 func IsBuiltInFunc(ident string) bool {
@@ -13,6 +14,7 @@ func IsBuiltInFunc(ident string) bool {
 		"append",
 		"print",
 		"itos",
+		"split",
 	}
 	for _, b := range builtIns {
 		if b == ident {
@@ -34,6 +36,8 @@ func ExecBuiltIn(ident string, mem *Memory, args []*analyze.ExprLevel) (*Object,
 		return Print(mem, args)
 	case "itos":
 		return ItoS(mem, args)
+	case "split":
+		return Split(mem, args)
 	}
 	return nil, fmt.Errorf("builtin function, %s is undefined", ident)
 }
@@ -78,4 +82,17 @@ func ItoS(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 		return nil, err
 	}
 	return NewStringObject(strconv.Itoa(objs[0].I)), nil
+}
+
+func Split(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+
+	var splits []*Object
+	for _, s := range strings.Split(objs[0].S, objs[1].S) {
+		splits = append(splits, NewStringObject(s))
+	}
+	return NewListObject(splits), nil
 }
