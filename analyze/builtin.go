@@ -37,4 +37,16 @@ func setBuiltIn() {
 		"":  {Type: TInt},
 		"v": {Type: TString},
 	}
+	symbols["as_string"] = map[string]*DataType{
+		"":  {Type: TString},
+		"v": {Type: TAny},
+	}
+	symbols["as_float"] = map[string]*DataType{
+		"":  {Type: TFloat},
+		"v": {Type: TAny},
+	}
+	symbols["as_int"] = map[string]*DataType{
+		"":  {Type: TInt},
+		"v": {Type: TAny},
+	}
 }

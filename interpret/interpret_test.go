@@ -371,6 +371,24 @@ func TestInterpret(t *testing.T) {
 			NewIntObject(1000),
 			nil,
 		},
+		{
+			"as_string",
+			`string main() { var s any = "hello"; return as_string(s); }`,
+			NewStringObject("hello"),
+			nil,
+		},
+		{
+			"as_int",
+			`int main() { var i any = 4440; return as_int(i); }`,
+			NewIntObject(4440),
+			nil,
+		},
+		{
+			"as_float",
+			`float main() { var f any = 100.343434; return as_float(f); }`,
+			NewFloatObject(100.343434),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {
