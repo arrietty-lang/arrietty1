@@ -33,4 +33,8 @@ func setBuiltIn() {
 			Key:   &DataType{Type: TString},
 			Value: &DataType{Type: TAny}},
 	}
+	symbols["stoi"] = map[string]*DataType{
+		"":  {Type: TInt},
+		"v": {Type: TString},
+	}
 }
