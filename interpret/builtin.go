@@ -68,7 +68,7 @@ func Print(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf(objs[0].S)
+	fmt.Print(objs[0].S)
 	return nil, nil
 }
 
