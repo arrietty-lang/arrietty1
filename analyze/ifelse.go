@@ -15,7 +15,7 @@ func NewIfElse(node *parse.Node) (*IfElse, error) {
 	}
 
 	ifBlock := node.Children[0]
-	if_, err := newStmtLevelBlock(ifBlock)
+	if_, err := NewStmtLevel(ifBlock)
 	if err != nil {
 		return nil, err
 	}
@@ -28,15 +28,8 @@ func NewIfElse(node *parse.Node) (*IfElse, error) {
 		}, nil
 	}
 
-	var else_ *StmtLevel = nil
 	elseBlock := node.Children[1]
-	if elseBlock.Children != nil {
-		e, err := newStmtLevelBlock(elseBlock)
-		if err != nil {
-			return nil, err
-		}
-		else_ = e
-	}
+	else_, err := NewStmtLevel(elseBlock)
 
 	return &IfElse{Cond: cond, IfBlock: if_, ElseBlock: else_}, nil
 }
