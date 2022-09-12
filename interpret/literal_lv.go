@@ -19,7 +19,8 @@ func evalLiteral(mem *Memory, literalLv *analyze.LiteralLevel) (*Object, error) 
 		if err != nil {
 			return nil, err
 		}
-		return ExecFunction(mem, f, literalLv.CallArgs)
+		v, _, err := ExecFunction(mem, f, literalLv.CallArgs)
+		return v, err
 	case analyze.LAtom:
 		return ConvertAtomToObject(literalLv.Atom)
 	case analyze.LList:

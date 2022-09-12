@@ -6,7 +6,7 @@ type FuncDef struct {
 	ReturnType *DataType
 	Ident      string
 	Params     []*FuncParam
-	Body       []*StmtLevel
+	Body       *StmtLevel
 }
 
 func NewFuncDef(retType, name, params, body *parse.Node) (*FuncDef, error) {
@@ -49,19 +49,15 @@ func NewFuncDef(retType, name, params, body *parse.Node) (*FuncDef, error) {
 		}
 	}
 
-	var stmts []*StmtLevel
-	for _, stmtNode := range body.Children {
-		s, err := NewStmtLevel(stmtNode)
-		if err != nil {
-			return nil, err
-		}
-		stmts = append(stmts, s)
+	block, err := NewBlock(body)
+	if err != nil {
+		return nil, err
 	}
 
 	return &FuncDef{
 		ReturnType: returnType,
 		Ident:      functionName,
 		Params:     ps,
-		Body:       stmts,
+		Body:       &StmtLevel{Kind: STBlock, Block: block},
 	}, nil
 }
