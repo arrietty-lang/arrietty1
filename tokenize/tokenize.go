@@ -126,6 +126,13 @@ func consumeString() (string, bool) {
 			continue
 		}
 
+		if userInput[wat] == '\\' && userInput[wat+1] == '\\' {
+			s += "\\"
+			lat += 2
+			wat += 2
+			continue
+		}
+
 		s += string(userInput[wat])
 		lat++
 		wat++
