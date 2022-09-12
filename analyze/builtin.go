@@ -27,4 +27,10 @@ func setBuiltIn() {
 		"target": {Type: TString},
 		"sep":    {Type: TString},
 	}
+	symbols["keys"] = map[string]*DataType{
+		"": {Type: TList, Item: &DataType{Type: TString}},
+		"d": {Type: TDict,
+			Key:   &DataType{Type: TString},
+			Value: &DataType{Type: TAny}},
+	}
 }

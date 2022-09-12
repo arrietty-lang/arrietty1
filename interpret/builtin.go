@@ -15,6 +15,7 @@ func IsBuiltInFunc(ident string) bool {
 		"print",
 		"itos",
 		"split",
+		"keys",
 	}
 	for _, b := range builtIns {
 		if b == ident {
@@ -38,6 +39,8 @@ func ExecBuiltIn(ident string, mem *Memory, args []*analyze.ExprLevel) (*Object,
 		return ItoS(mem, args)
 	case "split":
 		return Split(mem, args)
+	case "keys":
+		return Keys(mem, args)
 	}
 	return nil, fmt.Errorf("builtin function, %s is undefined", ident)
 }
@@ -95,4 +98,17 @@ func Split(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 		splits = append(splits, NewStringObject(s))
 	}
 	return NewListObject(splits), nil
+}
+
+func Keys(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
+	objs, err := args2Objs(mem, args)
+	if err != nil {
+		return nil, err
+	}
+	var keys []*Object
+	for k := range objs[0].D {
+		keys = append(keys, NewStringObject(k))
+	}
+
+	return NewListObject(keys), nil
 }
