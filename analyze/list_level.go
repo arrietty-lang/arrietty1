@@ -10,6 +10,9 @@ type ListLevel struct {
 }
 
 func (l *ListLevel) IsEmpty() bool {
+	if l.Items == nil {
+		return true
+	}
 	return len(l.Items) == 0
 }
 

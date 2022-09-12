@@ -320,6 +320,33 @@ func TestInterpret(t *testing.T) {
 			NewTrueObject(),
 			nil,
 		},
+		{
+			"split",
+			`[]string main() {
+					s := split("hello", "");
+					return s;
+				}`,
+			NewListObject([]*Object{
+				NewStringObject("h"),
+				NewStringObject("e"),
+				NewStringObject("l"),
+				NewStringObject("l"),
+				NewStringObject("o"),
+			}),
+			nil,
+		},
+		{
+			"split",
+			`[]string main() {
+					s := split("hello, world", ",");
+					return s;
+				}`,
+			NewListObject([]*Object{
+				NewStringObject("hello"),
+				NewStringObject(" world"),
+			}),
+			nil,
+		},
 		//{
 		//	"tarai",
 		//	`int tarai(x int, y int, z int) {

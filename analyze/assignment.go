@@ -37,12 +37,20 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		if err != nil {
 			return nil, err
 		}
+		// 関数だった場合型が戻り値からわかる&ListLevelに何も入ってないのでisEmptyでぬるぽする
 		// 長すぎw
-		if t.Type == TList && val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.ListLevel.IsEmpty() {
-			return nil, fmt.Errorf("can't assign empty-list to ident in short-variable-declaration")
+		if t.Type == TList {
+			if val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.Kind != LCall &&
+				val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.ListLevel.IsEmpty() {
+				return nil, fmt.Errorf("can't assign empty-list to ident in short-variable-declaration")
+			}
 		}
-		if t.Type == TDict && val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.DictLevel.IsEmpty() {
-			return nil, fmt.Errorf("can't assign empty-dict to ident in short-variable-declaration")
+		// 関数だった場合型が戻り値からわかる&DictLevelに何も入ってないのでisEmptyでぬるぽする
+		if t.Type == TDict {
+			if val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.Kind != LCall &&
+				val.EqualityLevel.RelationalLevel.AddLevel.MulLevel.UnaryLevel.PrimaryLevel.AccessLevel.LiteralLevel.DictLevel.IsEmpty() {
+				return nil, fmt.Errorf("can't assign empty-dict to ident in short-variable-declaration")
+			}
 		}
 		// シンボルテーブルに記録
 		err = defineVar(currentFunction, ident, t)
