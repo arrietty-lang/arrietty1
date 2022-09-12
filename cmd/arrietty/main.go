@@ -10,32 +10,6 @@ import (
 	"strings"
 )
 
-func readFile(filepath string) string {
-	BUFSIZE := 4 * 1024
-
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	data := make([]byte, 0, BUFSIZE)
-
-	buf := make([]byte, BUFSIZE)
-	for {
-		n, err := file.Read(buf)
-		if n == 0 {
-			break
-		}
-		if err != nil {
-			panic(err)
-		}
-		data = append(data, buf...)
-	}
-
-	return strings.Replace(string(data), "\x00", "", -1)
-}
-
 func main() {
 	args := os.Args[1:]
 	if len(args) >= 2 {
@@ -47,9 +21,12 @@ func main() {
 		log.Fatalf("Please specify the path of the file ending with .arr")
 	}
 
-	src := readFile(filepath)
+	src, err := os.ReadFile(filepath)
+	if err != nil {
+		log.Fatalf("failed to read file: %v", err)
+	}
 
-	tokens, err := tokenize.Tokenize(src)
+	tokens, err := tokenize.Tokenize(string(src))
 	if err != nil {
 		log.Fatalf("failed to tokenize: %v", err)
 	}
