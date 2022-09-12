@@ -6,13 +6,12 @@ import (
 )
 
 type Object struct {
-	Kind          ObjectKind
-	S             string
-	F             float64
-	I             int
-	D             map[string]*Object
-	L             []*Object
-	IsReturnValue bool
+	Kind ObjectKind
+	S    string
+	F    float64
+	I    int
+	D    map[string]*Object
+	L    []*Object
 }
 
 func (o *Object) AssignWithIndex(index *Object, value *Object) error {
@@ -28,11 +27,6 @@ func (o *Object) AssignWithIndex(index *Object, value *Object) error {
 		return nil
 	}
 	return fmt.Errorf("%s can't assgin value throw index", o.Kind.String())
-}
-
-func NewReturnValue(o *Object) *Object {
-	o.IsReturnValue = true
-	return o
 }
 
 func NewIntObject(i int) *Object {

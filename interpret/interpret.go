@@ -12,5 +12,6 @@ func Interpret(script map[string]*analyze.TopLevel) (*Object, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ExecFunction(FileMem, mainFunc, nil)
+	v, _, err := ExecFunction(FileMem, mainFunc, nil)
+	return v, err
 }
