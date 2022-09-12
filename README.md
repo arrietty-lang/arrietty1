@@ -17,15 +17,15 @@ print, len, type
 ### Grammar
 ```text
 program    = toplevel*
-toplevel   = types ident "(" funcParams? ")" block
+toplevel   = types ident "(" funcParams? ")" stmt
            | comment
-block      = "{" stmt* "}"
 stmt       =  expr ";"
            | "return" expr? ";"
-           | "if" "(" expr ")" block ("else" block)?
-           | "while" "(" expr ")" block
-           | "for" "(" expr? ";" expr? ";" expr? ")" block
+           | "if" "(" expr ")" stmt ("else" stmt)?
+           | "while" "(" expr ")" stmt
+           | "for" "(" expr? ";" expr? ";" expr? ")" stmt
            | comment
+           | "{" stmt* "}"
 expr       = assign
 assign     = "var" ident types ("=" andor)?   // varDecl (and assign)
            | ident ":=" andor                 // short varDecl

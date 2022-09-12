@@ -9,6 +9,7 @@ const (
 	STIfElse
 	STWhile
 	STFor
+	STBlock
 	STComment
 )
 
@@ -18,6 +19,7 @@ var sKind = [...]string{
 	STIfElse:    "STIfElse",
 	STWhile:     "STWhile",
 	STFor:       "STFor",
+	STBlock:     "STBlock",
 	STComment:   "STComment",
 }
 

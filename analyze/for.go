@@ -6,7 +6,7 @@ type For struct {
 	Init     *ExprLevel
 	Cond     *ExprLevel
 	Loop     *ExprLevel
-	ForBlock []*StmtLevel
+	ForBlock *StmtLevel
 }
 
 func NewFor(node *parse.Node) (*For, error) {
@@ -39,17 +39,15 @@ func NewFor(node *parse.Node) (*For, error) {
 		loop = l
 	}
 
-	var fors []*StmtLevel = nil
+	var for_ *StmtLevel = nil
 	forBlock := node.Children[0]
 	if forBlock.Children != nil {
-		for _, forStmt := range forBlock.Children {
-			stmt, err := NewStmtLevel(forStmt)
-			if err != nil {
-				return nil, err
-			}
-			fors = append(fors, stmt)
+		f, err := newStmtLevelBlock(forBlock)
+		if err != nil {
+			return nil, err
 		}
+		for_ = f
 	}
 
-	return &For{Init: init, Cond: cond, Loop: loop, ForBlock: fors}, nil
+	return &For{Init: init, Cond: cond, Loop: loop, ForBlock: for_}, nil
 }

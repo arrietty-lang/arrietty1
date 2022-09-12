@@ -9,6 +9,7 @@ type StmtLevel struct {
 	IfElse    *IfElse
 	While     *While
 	For       *For
+	Block     *Block
 	Comment   *Comment
 }
 
@@ -24,6 +25,8 @@ func NewStmtLevel(node *parse.Node) (*StmtLevel, error) {
 		return newStmtLevelWhile(node)
 	case parse.For:
 		return newStmtLevelFor(node)
+	case parse.Block:
+		return newStmtLevelBlock(node)
 	}
 
 	e, err := NewExprLevel(node)
@@ -68,4 +71,11 @@ func newStmtLevelFor(node *parse.Node) (*StmtLevel, error) {
 	}
 
 	return &StmtLevel{Kind: STFor, For: f}, nil
+}
+func newStmtLevelBlock(node *parse.Node) (*StmtLevel, error) {
+	f, err := NewBlock(node)
+	if err != nil {
+		return nil, err
+	}
+	return &StmtLevel{Kind: STBlock, Block: f}, nil
 }

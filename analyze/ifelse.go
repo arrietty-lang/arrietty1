@@ -4,8 +4,8 @@ import "github.com/x0y14/arrietty/parse"
 
 type IfElse struct {
 	Cond      *ExprLevel
-	IfBlock   []*StmtLevel
-	ElseBlock []*StmtLevel
+	IfBlock   *StmtLevel
+	ElseBlock *StmtLevel
 }
 
 func NewIfElse(node *parse.Node) (*IfElse, error) {
@@ -14,37 +14,29 @@ func NewIfElse(node *parse.Node) (*IfElse, error) {
 		return nil, err
 	}
 
-	var ifs []*StmtLevel = nil
 	ifBlock := node.Children[0]
-	if ifBlock.Children != nil {
-		for _, ifBlockStmt := range ifBlock.Children {
-			stmt, err := NewStmtLevel(ifBlockStmt)
-			if err != nil {
-				return nil, err
-			}
-			ifs = append(ifs, stmt)
-		}
+	if_, err := newStmtLevelBlock(ifBlock)
+	if err != nil {
+		return nil, err
 	}
 	// elseを解析せずに返す
 	if node.Kind == parse.If {
 		return &IfElse{
 			Cond:      cond,
-			IfBlock:   ifs,
+			IfBlock:   if_,
 			ElseBlock: nil,
 		}, nil
 	}
 
-	var elses []*StmtLevel = nil
+	var else_ *StmtLevel = nil
 	elseBlock := node.Children[1]
 	if elseBlock.Children != nil {
-		for _, elseBlockStmt := range elseBlock.Children {
-			stmt, err := NewStmtLevel(elseBlockStmt)
-			if err != nil {
-				return nil, err
-			}
-			elses = append(elses, stmt)
+		e, err := newStmtLevelBlock(elseBlock)
+		if err != nil {
+			return nil, err
 		}
+		else_ = e
 	}
 
-	return &IfElse{Cond: cond, IfBlock: ifs, ElseBlock: elses}, nil
+	return &IfElse{Cond: cond, IfBlock: if_, ElseBlock: else_}, nil
 }

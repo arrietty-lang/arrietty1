@@ -87,7 +87,7 @@ func toplevel() (*Node, error) {
 	}
 
 	// { stmt* }
-	codeBlock, err := block()
+	codeBlock, err := stmt()
 	if err != nil {
 		return nil, err
 	}
@@ -95,23 +95,23 @@ func toplevel() (*Node, error) {
 	return NewNodeFunctionDefine(retType.Pos, retType, ident, params, codeBlock), nil
 }
 
-func block() (*Node, error) {
-	var nodes []*Node
-	lcb, err := expect(tokenize.Lcb)
-	if err != nil {
-		return nil, err
-	}
-
-	for consume(tokenize.Rcb) == nil {
-		n, err := stmt()
-		if err != nil {
-			return nil, err
-		}
-		nodes = append(nodes, n)
-	}
-
-	return NewNodeWithChildren(lcb.Pos, Block, nodes), nil
-}
+//func block() (*Node, error) {
+//	var nodes []*Node
+//	lcb, err := expect(tokenize.Lcb)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	for consume(tokenize.Rcb) == nil {
+//		n, err := stmt()
+//		if err != nil {
+//			return nil, err
+//		}
+//		nodes = append(nodes, n)
+//	}
+//
+//	return NewNodeWithChildren(lcb.Pos, Block, nodes), nil
+//}
 
 func stmt() (*Node, error) {
 	var node *Node
@@ -152,13 +152,13 @@ func stmt() (*Node, error) {
 			return nil, err
 		}
 
-		ifBlock, err := block()
+		ifBlock, err := stmt()
 		if err != nil {
 			return nil, err
 		}
 
 		if else_ := consumeIdent("else"); else_ != nil {
-			elseBlock, err := block()
+			elseBlock, err := stmt()
 			if err != nil {
 				return nil, err
 			}
@@ -182,7 +182,7 @@ func stmt() (*Node, error) {
 			return nil, err
 		}
 
-		whileBlock, err := block()
+		whileBlock, err := stmt()
 		if err != nil {
 			return nil, err
 		}
@@ -233,11 +233,21 @@ func stmt() (*Node, error) {
 				return nil, err
 			}
 		}
-		forBlock, err := block()
+		forBlock, err := stmt()
 		if err != nil {
 			return nil, err
 		}
 		node = NewNodeWithExpr(for_.Pos, For, init, cond, loop, []*Node{forBlock})
+	} else if lcb_ := consume(tokenize.Lcb); lcb_ != nil {
+		var nodes []*Node
+		for consume(tokenize.Rcb) == nil {
+			n, err := stmt()
+			if err != nil {
+				return nil, err
+			}
+			nodes = append(nodes, n)
+		}
+		node = NewNodeWithChildren(lcb_.Pos, Block, nodes)
 	} else {
 		n, err := expr()
 		if err != nil {
