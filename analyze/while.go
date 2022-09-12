@@ -13,14 +13,11 @@ func NewWhile(node *parse.Node) (*While, error) {
 		return nil, err
 	}
 
-	var while_ *StmtLevel = nil
+	//var while_ *StmtLevel = nil
 	whileBlock := node.Children[0]
-	if whileBlock.Children != nil {
-		w, err := newStmtLevelBlock(whileBlock)
-		if err != nil {
-			return nil, err
-		}
-		while_ = w
+	while_, err := NewStmtLevel(whileBlock)
+	if err != nil {
+		return nil, err
 	}
 
 	return &While{

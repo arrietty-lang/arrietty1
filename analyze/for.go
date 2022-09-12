@@ -39,14 +39,10 @@ func NewFor(node *parse.Node) (*For, error) {
 		loop = l
 	}
 
-	var for_ *StmtLevel = nil
 	forBlock := node.Children[0]
-	if forBlock.Children != nil {
-		f, err := newStmtLevelBlock(forBlock)
-		if err != nil {
-			return nil, err
-		}
-		for_ = f
+	for_, err := NewStmtLevel(forBlock)
+	if err != nil {
+		return nil, err
 	}
 
 	return &For{Init: init, Cond: cond, Loop: loop, ForBlock: for_}, nil
