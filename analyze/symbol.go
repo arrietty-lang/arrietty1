@@ -1,5 +1,7 @@
 package analyze
 
+import "fmt"
+
 var symbols map[string]map[string]*DataType
 var currentFunction string
 
@@ -53,4 +55,26 @@ func isDefinableIdent(funcScope string, id string) bool {
 		return false
 	}
 	return true
+}
+
+func getFuncParams(name string) (map[string]*FuncParam, error) {
+	_, ok := isDefinedFunc(name)
+	if !ok {
+		return nil, fmt.Errorf("can't get undefined function's paramaters")
+	}
+
+	params := map[string]*FuncParam{}
+
+	for paramName := range symbols[name] {
+		if paramName == "" {
+			// 関数の戻り値
+			continue
+		}
+		params[paramName] = &FuncParam{
+			Ident: paramName,
+			Type:  symbols[name][paramName],
+		}
+	}
+
+	return params, nil
 }

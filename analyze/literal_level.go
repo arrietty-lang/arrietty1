@@ -107,16 +107,23 @@ func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
 
 	identNode := node.Children[0]
 	ident := identNode.S
-	if argsNode == nil {
-		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
+
+	wantParams, err := getFuncParams(ident)
+	if err != nil {
+		return nil, err
 	}
 
 	if argsNode == nil {
+		//　数の一致
+		if len(wantParams) != 0 {
+			return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", ident, len(wantParams), 0)
+		}
 		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
 	}
 
-	if argsNode == nil {
-		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
+	// 数の一致
+	if len(wantParams) != len(argsNode.Children) {
+		return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", ident, len(wantParams), len(argsNode.Children))
 	}
 
 	var args []*ExprLevel
@@ -125,6 +132,7 @@ func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		args = append(args, arg)
 	}
 
