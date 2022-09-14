@@ -71,16 +71,16 @@ func newAccessLevelIndex(node *parse.Node) (*AccessLevel, error) {
 
 	// 左辺をidentとして読み取ることができたら、シンボルテーブルから型データを取り出す
 	if src.Kind == ACLiteralLevel && src.LiteralLevel.Kind == LIdent {
-		srcType, ok := isDefinedVariable(currentFunction, src.LiteralLevel.Ident)
+		varSymbol, ok := currentFunc.IsDefinedLocalVar(src.LiteralLevel.Ident)
 		if ok {
-			if srcType.Type == TList {
+			if varSymbol.DataType.Type == TList {
 				if indexType.Type != TInt {
 					return nil, fmt.Errorf("list index expect int, but got %s", indexType.String())
 				}
 				indexKind = ACListIndex
-			} else if srcType.Type == TDict {
-				if !isSameType(srcType.Key, indexType) {
-					return nil, fmt.Errorf("dict key type is not match: expect %s, but got %s", srcType.Key.String(), indexType.String())
+			} else if varSymbol.DataType.Type == TDict {
+				if !isSameType(varSymbol.DataType.Key, indexType) {
+					return nil, fmt.Errorf("dict key type is not match: expect %s, but got %s", varSymbol.DataType.Key.String(), indexType.String())
 				}
 				indexKind = ACDictIndex
 			}

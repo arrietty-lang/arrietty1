@@ -23,19 +23,24 @@ func (l *LiteralLevel) GetType() (*DataType, error) {
 	case LParentheses:
 		return l.ExprLevel.GetType()
 	case LIdent:
-		v, ok := isDefinedVariable(currentFunction, l.Ident)
+		identType, ok := currentFunc.IsDefinedLocalVar(l.Ident)
 		if !ok {
 			// シンボルテーブルに定義されていない変数から型情報を引き出そうとした
 			return nil, NewUndefinedErr(l.Ident)
 		}
-		return v, nil
+		return identType.DataType, nil
 	case LCall:
-		t, ok := isDefinedFunc(l.Ident)
+		funcDecl, ok := currentPkg.IsDefinedFunc(l.Ident)
 		if !ok {
-			// 同じく定義されていない関数から戻り値を取得しようとした
-			return nil, NewUndefinedErr(l.Ident)
+			f, ok := builtinPkg.IsDefinedFunc(l.Ident)
+			if !ok {
+
+				// 定義されていない関数から戻り値を取得しようとした
+				return nil, NewUndefinedErr(l.Ident)
+			}
+			funcDecl = f
 		}
-		return t, nil
+		return funcDecl.ReturnType, nil
 	case LAtom:
 		return l.Atom.GetType()
 	case LList:
@@ -106,37 +111,55 @@ func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
 	}
 
 	identNode := node.Children[0]
-	ident := identNode.S
+	functionName := identNode.S
 
-	wantParams, err := getFuncParams(ident)
-	if err != nil {
-		return nil, err
-	}
-
-	if argsNode == nil {
-		//　数の一致
-		if len(wantParams) != 0 {
-			return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", ident, len(wantParams), 0)
+	funcDecl, ok := currentPkg.IsDefinedFunc(functionName)
+	if !ok {
+		f, ok := builtinPkg.IsDefinedFunc(functionName)
+		if !ok {
+			return nil, fmt.Errorf("the function you tried to call is not defined: %s", functionName)
 		}
-		return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: nil}, nil
+		funcDecl = f
 	}
 
-	// 数の一致
-	if len(wantParams) != len(argsNode.Children) {
-		return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", ident, len(wantParams), len(argsNode.Children))
+	functionParams := funcDecl.Params
+
+	// 引数の個数が一致するかの確認
+	// 呼び出し時に渡された引数がnil(0個)だった場合
+	if argsNode == nil {
+		if len(functionParams) != 0 {
+			return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", functionName, len(functionParams), 0)
+		}
+		return &LiteralLevel{Kind: LCall, Ident: functionName, CallArgs: nil}, nil
+	}
+	if len(functionParams) != len(argsNode.Children) {
+		return nil, fmt.Errorf("%s call param error want: %d, reserve: %d", functionName, len(functionParams), len(argsNode.Children))
 	}
 
+	// 引数を前から順番に型を検証していく
 	var args []*ExprLevel
-	for _, argNode := range argsNode.Children {
+	for i, argNode := range argsNode.Children {
 		arg, err := NewExprLevel(argNode)
 		if err != nil {
 			return nil, err
 		}
 
+		// 引数の型を取得
+		argType, err := arg.GetType()
+		if err != nil {
+			return nil, fmt.Errorf("filed to getType : params.%d of function %s", i, functionName)
+		}
+
+		// 型検証
+		paramData := funcDecl.Params[i]
+		if !isAssignable(paramData.DataType, argType) {
+			return nil, fmt.Errorf("%s's param: %s, reserve invalid type arg. want: %s, reserve: %s", functionName, paramData.Ident, paramData.DataType.String(), argType.String())
+		}
+
 		args = append(args, arg)
 	}
 
-	return &LiteralLevel{Kind: LCall, Ident: ident, CallArgs: args}, nil
+	return &LiteralLevel{Kind: LCall, Ident: functionName, CallArgs: args}, nil
 }
 
 func newLiteralLevelList(node *parse.Node) (*LiteralLevel, error) {

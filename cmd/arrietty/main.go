@@ -36,7 +36,7 @@ func main() {
 		log.Fatalf("failed to parse: %v", err)
 	}
 
-	tops, err := analyze.Analyze(nodes)
+	tops, err := analyze.Analyze("test", nodes)
 	if err != nil {
 		log.Fatalf("failed to analyze: %v", err)
 	}

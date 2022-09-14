@@ -1,6 +1,9 @@
 package analyze
 
-import "github.com/x0y14/arrietty/parse"
+import (
+	"fmt"
+	"github.com/x0y14/arrietty/parse"
+)
 
 type FuncDef struct {
 	ReturnType *DataType
@@ -12,40 +15,46 @@ type FuncDef struct {
 func NewFuncDef(retType, name, params, body *parse.Node) (*FuncDef, error) {
 	functionName := name.S
 
-	// body解析を行う際に必要になるので設定しておく
-	currentFunction = functionName
+	// funcを宣言
+	funcDecl, err := currentPkg.DeclareFunc(functionName)
+	if err != nil {
+		return nil, err
+	}
+	currentFunc = funcDecl
+	funcDecl.Ident = functionName
 
 	// 戻り値解析
 	returnType, err := NewDataTypeFromNode(retType)
 	if err != nil {
 		return nil, err
 	}
+	funcDecl.ReturnType = returnType
 
-	// 変数の宣言データを保存する領域を確保
-	symbols[functionName] = map[string]*DataType{}
-	// Identとして使用できない空白キーに関数の戻り値を設定
-	symbols[functionName][""] = returnType
-
-	var ps []*FuncParam
+	// パラメータの解析
+	var funcParams []*FuncParam
 	if params != nil {
 		for _, paramNode := range params.Children {
-			p, err := NewFuncParam(paramNode)
+			param, err := NewFuncParam(paramNode)
 			if err != nil {
 				return nil, err
 			}
 
-			// すでに変数として定義されている
-			if !isDefinableIdent(functionName, p.Ident) {
-				return nil, NewAlreadyDefinedErr(functionName, p.Ident)
-			}
+			// パラメータを設定
+			funcDecl.Params = append(funcDecl.Params, &VariableSymbol{
+				Public:   false,
+				Ident:    param.Ident,
+				DataType: param.Type,
+			})
 
-			// ローカル変数として宣言してあげる
-			err = defineVar(functionName, p.Ident, p.Type)
+			// パラメータをローカル変数として宣言
+			funcParamDecl, err := funcDecl.DeclareLocalVar(param.Ident)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to declare param of %s(): %v", currentFunc, err)
 			}
+			funcParamDecl.Ident = param.Ident
+			funcParamDecl.DataType = param.Type
 
-			ps = append(ps, p)
+			funcParams = append(funcParams, param)
 		}
 	}
 
@@ -57,7 +66,7 @@ func NewFuncDef(retType, name, params, body *parse.Node) (*FuncDef, error) {
 	return &FuncDef{
 		ReturnType: returnType,
 		Ident:      functionName,
-		Params:     ps,
+		Params:     funcParams,
 		Body:       &StmtLevel{Kind: STBlock, Block: block},
 	}, nil
 }

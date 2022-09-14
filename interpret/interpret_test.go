@@ -409,7 +409,7 @@ func TestInterpret(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Cleanup(func() {
-				analyze.CleanUp()
+				analyze.ResetSymbols()
 			})
 			tokens, err := tokenize.Tokenize(tt.in)
 			if err != nil {
@@ -421,7 +421,7 @@ func TestInterpret(t *testing.T) {
 				t.Fatalf("failed to parse: %v", err)
 			}
 
-			tops, err := analyze.Analyze(nodes)
+			tops, err := analyze.Analyze("test", nodes)
 			if err != nil {
 				t.Fatalf("failed to analyze: %v", err)
 			}
