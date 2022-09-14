@@ -23,8 +23,8 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		ident := node.Lhs.S
 		// すでに定義されている
 		// 宣言+割り当てなので宣言されてはならない
-		if !isDefinableIdent(currentFunction, ident) {
-			return nil, NewAlreadyDefinedErr(currentFunction, ident)
+		if _, ok := currentFunc.IsDefinedLocalVar(ident); ok {
+			return nil, NewAlreadyDefinedErr(currentFunc.Ident, ident)
 		}
 
 		// 右辺代入するデータを解析、型を取得
@@ -53,10 +53,13 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 			}
 		}
 		// シンボルテーブルに記録
-		err = defineVar(currentFunction, ident, t)
+		//err = defineVar(currentFunction, ident, t)
+		varDecl, err := currentFunc.DeclareLocalVar(ident)
 		if err != nil {
 			return nil, err
 		}
+		varDecl.Ident = ident
+		varDecl.DataType = t
 
 		return &Assignment{Kind: ToDefinedIdent, Ident: ident, Value: val, Inline: true}, nil
 	}
@@ -92,7 +95,7 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		// ident = RHS
 		// シンボルテーブルに記録されているはず
 		ident := node.Lhs.S
-		identType, ok := isDefinedVariable(currentFunction, ident)
+		identVarDecl, ok := currentFunc.IsDefinedLocalVar(ident)
 		if !ok {
 			return nil, NewUndefinedErr(ident)
 		}
@@ -108,8 +111,8 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		}
 
 		// 両辺の型が一致していることを確認
-		if !isAssignable(identType, valueType) {
-			return nil, fmt.Errorf("[assign(to ident)] type miss match L:%s, R:%s", identType.String(), valueType.String())
+		if !isAssignable(identVarDecl.DataType, valueType) {
+			return nil, fmt.Errorf("[assign(to ident)] type miss match L:%s, R:%s", identVarDecl.DataType.String(), valueType.String())
 		}
 		return &Assignment{Kind: ToDefinedIdent, Ident: ident, Value: val}, nil
 	case parse.Access:
@@ -166,9 +169,9 @@ func NewAssignment(node *parse.Node) (*Assignment, error) {
 		//	if err != nil {
 		//		return nil, err
 		//	}
-		//	if accType.Type == TDict {
+		//	if accType.DataType == TDict {
 		//		destination = ToDictKey
-		//	} else if accType.Type == TList {
+		//	} else if accType.DataType == TList {
 		//		destination = ToListIndex
 		//	}
 		//

@@ -25,7 +25,7 @@ func newTopLevelFuncDef(node *parse.Node) (*TopLevel, error) {
 	paramsNode := node.Children[2]
 	bodyNode := node.Children[3]
 
-	_, yes := isDefinedFunc(nameNode.S)
+	_, yes := currentPkg.IsDefinedFunc(nameNode.S)
 	if yes {
 		return nil, NewAlreadyDefinedErr("file-toplevel", nameNode.S)
 	}

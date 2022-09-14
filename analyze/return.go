@@ -10,7 +10,7 @@ type Return struct {
 }
 
 func NewReturn(node *parse.Node) (*Return, error) {
-	retType, _ := isDefinedFunc(currentFunction)
+	retType := currentFunc.ReturnType
 
 	if node.Children == nil || node.Children[0] == nil {
 		// voidではないのに、戻り値が提供されていない

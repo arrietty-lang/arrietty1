@@ -1,14 +1,38 @@
 package analyze
 
-import "github.com/x0y14/arrietty/parse"
+import (
+	"fmt"
+	"github.com/x0y14/arrietty/parse"
+)
 
-func CleanUp() {
-	currentFunction = ""
-	symbols = map[string]map[string]*DataType{}
-	setBuiltIn() // 掃除後もつける
+var currentPkg *PkgSymbols
+var builtinPkg *PkgSymbols
+var currentFunc *FunctionSymbol
+var symbolTable *SymbolTable
+
+func ResetSymbols() {
+	currentPkg = nil
+	currentFunc = nil
+	symbolTable = &SymbolTable{}
+	symbolTable.Packages = map[string]*PkgSymbols{}
+	attachBuiltin() // 付け直し
 }
 
-func Analyze(nodes []*parse.Node) (map[string]*TopLevel, error) {
+func init() {
+	currentPkg = nil
+	currentFunc = nil
+	symbolTable = &SymbolTable{}
+	symbolTable.Packages = map[string]*PkgSymbols{}
+	attachBuiltin()
+}
+
+func Analyze(pkgName string, nodes []*parse.Node) (map[string]*TopLevel, error) {
+	pkg, err := symbolTable.DeclarePkg(pkgName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to declare pkg: %v", err)
+	}
+	currentPkg = pkg
+
 	scripts := map[string]*TopLevel{}
 	for _, n := range nodes {
 		top, err := NewToplevel(n)

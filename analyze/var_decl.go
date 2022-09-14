@@ -8,25 +8,19 @@ type VarDecl struct {
 }
 
 func NewVarDecl(node *parse.Node) (*VarDecl, error) {
-
 	identNode := node.Lhs
 	ident := identNode.S
 
-	if !isDefinableIdent(currentFunction, ident) {
-		// 関数内あるいは、ルートの関数名としてすでに定義されてる
-		return nil, NewAlreadyDefinedErr(currentFunction, ident)
-	}
-
+	// 型解析
 	typ, err := NewDataTypeFromNode(node.Rhs)
 	if err != nil {
 		return nil, err
 	}
 
 	// シンボルテーブルに保存
-	err = defineVar(currentFunction, ident, typ)
-	if err != nil {
-		return nil, err
-	}
+	localVar, err := currentFunc.DeclareLocalVar(ident)
+	localVar.Ident = ident
+	localVar.DataType = typ
 
 	return &VarDecl{
 		Ident: ident,
