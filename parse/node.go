@@ -123,6 +123,14 @@ func NewNodeFunctionDefine(pos *tokenize.Position, retType *Node, ident *Node, p
 	}
 }
 
+func NewNodeImport(pos *tokenize.Position, pkgName string) *Node {
+	return &Node{
+		Kind: Import,
+		Pos:  pos,
+		S:    pkgName,
+	}
+}
+
 func NewNodeCall(pos *tokenize.Position, ident *Node, args *Node) *Node {
 	return &Node{
 		Pos:      pos,

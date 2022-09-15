@@ -19,6 +19,7 @@ print, len, type
 program    = toplevel*
 toplevel   = types ident "(" funcParams? ")" stmt
            | comment
+           | "import" string ";"
 stmt       =  expr ";"
            | "return" expr? ";"
            | "if" "(" expr ")" stmt ("else" stmt)?

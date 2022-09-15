@@ -55,6 +55,18 @@ func toplevel() (*Node, error) {
 		return NewNodeComment(c_.Pos, c_.S), nil
 	}
 
+	if imp_ := consumeIdent("import"); imp_ != nil {
+		pkgNameNode, err := expect(tokenize.String)
+		if err != nil {
+			return nil, err
+		}
+		_, err = expect(tokenize.Semi)
+		if err != nil {
+			return nil, err
+		}
+		return NewNodeImport(imp_.Pos, pkgNameNode.S), nil
+	}
+
 	retType, err := types()
 	if err != nil {
 		return nil, err
