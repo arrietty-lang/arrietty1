@@ -1,7 +1,9 @@
 package tokenize
 
 import (
+	"log"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -44,7 +46,7 @@ func isIdentRune(r rune) bool {
 	return ('a' <= r && r <= 'z') ||
 		('A' <= r && r <= 'Z') ||
 		('0' <= r && r <= '9') ||
-		('_' == r)
+		('_' == r || '.' == r)
 }
 
 func isNotEof() bool {
@@ -77,6 +79,14 @@ func consumeIdent() string {
 		s += string(userInput[wat])
 		lat++
 		wat++
+	}
+	if strings.HasSuffix(s, ".") {
+		log.Fatalf("ident can't have dot-suffix.")
+	}
+	if strings.Contains(s, ".") {
+		if len(strings.Split(s, ".")) > 2 {
+			log.Fatalf("Ident cannot have more than one dot.")
+		}
 	}
 	return s
 }

@@ -63,7 +63,7 @@ func TestAnalyze(t *testing.T) {
 				t.Fatalf("failed to parse: %v", err)
 			}
 
-			tops, err := Analyze(nodes)
+			tops, err := Analyze("placeholder", nodes)
 			if !assert.Equal(t, tt.expectErr, err) {
 				t.Fatalf("failed to analyze: %v", err)
 			}

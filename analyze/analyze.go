@@ -43,5 +43,6 @@ func Analyze(pkgName string, nodes []*parse.Node) (map[string]*TopLevel, error) 
 			scripts[top.FuncDef.Ident] = top
 		}
 	}
+
 	return scripts, nil
 }

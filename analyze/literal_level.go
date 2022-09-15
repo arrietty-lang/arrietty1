@@ -3,6 +3,7 @@ package analyze
 import (
 	"fmt"
 	"github.com/x0y14/arrietty/parse"
+	"strings"
 )
 
 type LiteralLevel struct {
@@ -30,17 +31,33 @@ func (l *LiteralLevel) GetType() (*DataType, error) {
 		}
 		return identType.DataType, nil
 	case LCall:
-		funcDecl, ok := currentPkg.IsDefinedFunc(l.Ident)
-		if !ok {
-			f, ok := builtinPkg.IsDefinedFunc(l.Ident)
+		// ドットが含まれていたら別パッケージの関数に対する呼び出し
+		if strings.Contains(l.Ident, ".") {
+			s := strings.Split(l.Ident, ".")
+			pkgName := s[0]
+			fnName := s[1]
+			pkg, ok := symbolTable.IsDefinedPkg(pkgName)
 			if !ok {
-
-				// 定義されていない関数から戻り値を取得しようとした
-				return nil, NewUndefinedErr(l.Ident)
+				return nil, fmt.Errorf("pkg %s is not defined", pkgName)
 			}
-			funcDecl = f
+			pkgFuncDecl, ok := pkg.IsDefinedFunc(fnName)
+			if !ok {
+				return nil, fmt.Errorf("pkg %s do not have function %s", pkgName, fnName)
+			}
+			return pkgFuncDecl.ReturnType, nil
 		}
-		return funcDecl.ReturnType, nil
+		// 現在解析中のパッケージから検索
+		funcDecl, ok := currentPkg.IsDefinedFunc(l.Ident)
+		if ok {
+			return funcDecl.ReturnType, nil
+		}
+		// ビルトインから検索
+		builtinFuncDecl, ok := builtinPkg.IsDefinedFunc(l.Ident)
+		if ok {
+			return builtinFuncDecl.ReturnType, nil
+		}
+		// ない
+		return nil, NewUndefinedErr(l.Ident)
 	case LAtom:
 		return l.Atom.GetType()
 	case LList:
@@ -113,13 +130,38 @@ func newLiteralLevelCall(node *parse.Node) (*LiteralLevel, error) {
 	identNode := node.Children[0]
 	functionName := identNode.S
 
-	funcDecl, ok := currentPkg.IsDefinedFunc(functionName)
-	if !ok {
-		f, ok := builtinPkg.IsDefinedFunc(functionName)
+	var funcDecl *FunctionSymbol = nil
+
+	// 別パッケージだった場合
+	if strings.Contains(functionName, ".") {
+		pkgNameFnName := strings.Split(functionName, ".")
+		pkgName := pkgNameFnName[0]
+		fnName := pkgNameFnName[1]
+		pkg, ok := symbolTable.IsDefinedPkg(pkgName)
 		if !ok {
-			return nil, fmt.Errorf("the function you tried to call is not defined: %s", functionName)
+			return nil, fmt.Errorf("pkg %s is not defined", pkgName)
 		}
+		pkgFuncDecl, ok := pkg.IsDefinedFunc(fnName)
+		if !ok {
+			return nil, fmt.Errorf("pkg %s do not have function %s", pkgName, fnName)
+		}
+		funcDecl = pkgFuncDecl
+	}
+
+	// 組み込み
+	f, ok := builtinPkg.IsDefinedFunc(functionName)
+	if ok {
 		funcDecl = f
+	}
+
+	// current pkg
+	f, ok = currentPkg.IsDefinedFunc(functionName)
+	if ok {
+		funcDecl = f
+	}
+
+	if funcDecl == nil {
+		return nil, fmt.Errorf("the function you tried to call is not defined: %s", functionName)
 	}
 
 	functionParams := funcDecl.Params

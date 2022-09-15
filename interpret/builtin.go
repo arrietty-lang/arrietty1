@@ -117,7 +117,7 @@ func Keys(mem *Memory, args []*analyze.ExprLevel) (*Object, error) {
 	if err != nil {
 		return nil, err
 	}
-	var keys []*Object
+	var keys []*Object = nil
 	for k := range objs[0].D {
 		keys = append(keys, NewStringObject(k))
 	}
