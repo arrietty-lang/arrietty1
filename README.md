@@ -68,7 +68,7 @@ dict  = "{" kv? "}"
       | "{" kv ("," kv)* "}"
 kv    = string ":" unary
 
-ident   = [a-zA-Z_][a-zA-Z0-9_]*
+ident   = [a-zA-Z_][a-zA-Z0-9_]* ("." [a-zA-Z0-9_]+)?
 float   = [0-9]+[0-9.][0-9]+
 int     = [0-9]+
 string  = "\"" any-character* "\""

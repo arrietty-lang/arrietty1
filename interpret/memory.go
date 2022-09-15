@@ -5,6 +5,10 @@ import (
 	"github.com/x0y14/arrietty/analyze"
 )
 
+type RuntimeMemory struct {
+	Packages map[string]*Memory
+}
+
 type Memory struct {
 	Variables    map[string]*Object
 	RawFunctions map[string]*analyze.TopLevel

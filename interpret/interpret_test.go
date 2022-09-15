@@ -421,16 +421,90 @@ func TestInterpret(t *testing.T) {
 				t.Fatalf("failed to parse: %v", err)
 			}
 
-			tops, err := analyze.Analyze("test", nodes)
+			tops, err := analyze.Analyze("placeholder", nodes)
 			if err != nil {
 				t.Fatalf("failed to analyze: %v", err)
 			}
 
-			obj, err := Interpret(tops)
+			Setup()
+			err = LoadScript("placeholder", tops)
+			if err != nil {
+				t.Fatalf("failed to load semantics node tree: %v", err)
+			}
+			obj, err := Interpret("placeholder", "main")
 
 			assert.Equal(t, tt.expectErr, err)
 			assert.Equal(t, tt.expectObj, obj)
 
 		})
 	}
+}
+
+func TestAttachPkg(t *testing.T) {
+	samplePkgId := "sample_pkg"
+	samplePkgCode := `
+	string sayHello(name string) {
+		return "hello, " + name;
+	}
+	`
+	mainPkgId := "attach_test"
+	mainPkgCode := `
+	int main() {
+		result := sample_pkg.sayHello("john");
+		if (result == "hello, john") {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	`
+	// 念のため実行環境をお掃除
+	t.Cleanup(func() {
+		analyze.ResetSymbols()
+	})
+	Setup()
+
+	// 依存パッケージを読み込み
+	tokens, err := tokenize.Tokenize(samplePkgCode)
+	if err != nil {
+		t.Fatalf("failed to tokenize: %v", err)
+	}
+	nodes, err := parse.Parse(tokens)
+	if err != nil {
+		t.Fatalf("failed to parse: %v", err)
+	}
+	tops, err := analyze.Analyze(samplePkgId, nodes)
+	if err != nil {
+		t.Fatalf("failed to analyze: %v", err)
+	}
+	err = LoadScript(samplePkgId, tops)
+	if err != nil {
+		t.Fatalf("failed to load semantics node tree: %v", err)
+	}
+
+	// 本体
+	tokens, err = tokenize.Tokenize(mainPkgCode)
+	if err != nil {
+		t.Fatalf("failed to tokenize: %v", err)
+	}
+	nodes, err = parse.Parse(tokens)
+	if err != nil {
+		t.Fatalf("failed to parse: %v", err)
+	}
+	tops, err = analyze.Analyze(mainPkgId, nodes)
+	if err != nil {
+		t.Fatalf("failed to analyze: %v", err)
+	}
+	err = LoadScript(mainPkgId, tops)
+	if err != nil {
+		t.Fatalf("failed to load semantics node tree: %v", err)
+	}
+
+	fnName := "main"
+	returnValue, err := Interpret(mainPkgId, fnName)
+	if err != nil {
+		t.Fatalf("failed to run %s.%s: %v", mainPkgId, fnName, err)
+	}
+
+	assert.Equal(t, NewIntObject(0), returnValue)
 }
