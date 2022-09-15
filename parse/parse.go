@@ -798,3 +798,15 @@ func Parse(tok *tokenize.Token) ([]*Node, error) {
 	token = tok
 	return program()
 }
+
+func FromTokens(someTokens []*tokenize.Token) ([][]*Node, error) {
+	var syntaxTrees [][]*Node
+	for _, t := range someTokens {
+		syntaxTree, err := Parse(t)
+		if err != nil {
+			return nil, err
+		}
+		syntaxTrees = append(syntaxTrees, syntaxTree)
+	}
+	return syntaxTrees, nil
+}

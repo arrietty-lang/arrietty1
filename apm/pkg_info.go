@@ -12,6 +12,7 @@ type PkgInfo struct {
 }
 
 type Dependencies struct {
+	Name    string `json:"name,omitempty"`
 	Version string `json:"version,omitempty"`
 	Url     string `json:"url,omitempty"`
 }

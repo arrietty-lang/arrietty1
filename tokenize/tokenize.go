@@ -2,6 +2,7 @@ package tokenize
 
 import (
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"unicode"
@@ -278,4 +279,21 @@ inputLoop:
 
 	cur = NewEof(cur, NewPosition(lno, lat, wat))
 	return head.Next, nil
+}
+
+func FromPaths(somePath []string) ([]*Token, error) {
+	var fileTokens []*Token
+	for _, p := range somePath {
+		bytes, err := os.ReadFile(p)
+		if err != nil {
+			return nil, err
+		}
+		tok, err := Tokenize(string(bytes))
+		if err != nil {
+			return nil, err
+		}
+		fileTokens = append(fileTokens, tok)
+	}
+
+	return fileTokens, nil
 }

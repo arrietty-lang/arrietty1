@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/x0y14/arrietty/analyze"
+	"github.com/x0y14/arrietty/apm"
 	"github.com/x0y14/arrietty/parse"
 	"github.com/x0y14/arrietty/tokenize"
+	"log"
+	"path/filepath"
 	"testing"
 )
 
@@ -421,17 +424,20 @@ func TestInterpret(t *testing.T) {
 				t.Fatalf("failed to parse: %v", err)
 			}
 
-			tops, err := analyze.Analyze("placeholder", nodes)
-			if err != nil {
-				t.Fatalf("failed to analyze: %v", err)
-			}
+			err = analyze.PkgAnalyze("test_pkg", [][]*parse.Node{nodes})
+			//tops, err := analyze.Analyze(nodes)
+			//if err != nil {
+			//	t.Fatalf("failed to analyze: %v", err)
+			//}
+
+			packages := analyze.GetAnalyzedPackages()
 
 			Setup()
-			err = LoadScript("placeholder", tops)
+			err = LoadScript("test_pkg", packages["test_pkg"])
 			if err != nil {
 				t.Fatalf("failed to load semantics node tree: %v", err)
 			}
-			obj, err := Interpret("placeholder", "main")
+			obj, err := Interpret("test_pkg", "main")
 
 			assert.Equal(t, tt.expectErr, err)
 			assert.Equal(t, tt.expectObj, obj)
@@ -441,69 +447,53 @@ func TestInterpret(t *testing.T) {
 }
 
 func TestAttachPkg(t *testing.T) {
-	samplePkgId := "sample_pkg"
-	samplePkgCode := `
-	string sayHello(name string) {
-		return "hello, " + name;
-	}
-	`
-	mainPkgId := "attach_test"
-	mainPkgCode := `
-	int main() {
-		result := sample_pkg.sayHello("john");
-		if (result == "hello, john") {
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-	`
 	// 念のため実行環境をお掃除
 	t.Cleanup(func() {
 		analyze.ResetSymbols()
 	})
 	Setup()
 
-	// 依存パッケージを読み込み
-	tokens, err := tokenize.Tokenize(samplePkgCode)
+	entryArrAbs, err := filepath.Abs("../examples/test/use_sample_pkg.arr")
 	if err != nil {
-		t.Fatalf("failed to tokenize: %v", err)
+		log.Fatalf("failed to absoluting: %v", err)
 	}
-	nodes, err := parse.Parse(tokens)
+	pkgDirOfEntryArr := filepath.Dir(entryArrAbs)
+	entryPkgInfo, err := apm.GetCurrentPackageInfo(pkgDirOfEntryArr)
 	if err != nil {
-		t.Fatalf("failed to parse: %v", err)
+		log.Fatalf("failed to read pkg.json: %v", err)
 	}
-	tops, err := analyze.Analyze(samplePkgId, nodes)
+	entryPkgArrs, err := apm.GetArrFilePathsInCurrent(pkgDirOfEntryArr)
 	if err != nil {
-		t.Fatalf("failed to analyze: %v", err)
-	}
-	err = LoadScript(samplePkgId, tops)
-	if err != nil {
-		t.Fatalf("failed to load semantics node tree: %v", err)
+		log.Fatalf("failed to get .arr files: %v", err)
 	}
 
-	// 本体
-	tokens, err = tokenize.Tokenize(mainPkgCode)
+	tokens, err := tokenize.FromPaths(entryPkgArrs)
 	if err != nil {
-		t.Fatalf("failed to tokenize: %v", err)
-	}
-	nodes, err = parse.Parse(tokens)
-	if err != nil {
-		t.Fatalf("failed to parse: %v", err)
-	}
-	tops, err = analyze.Analyze(mainPkgId, nodes)
-	if err != nil {
-		t.Fatalf("failed to analyze: %v", err)
-	}
-	err = LoadScript(mainPkgId, tops)
-	if err != nil {
-		t.Fatalf("failed to load semantics node tree: %v", err)
+		log.Fatalf("failed to tokenize: %v", err)
 	}
 
-	fnName := "main"
-	returnValue, err := Interpret(mainPkgId, fnName)
+	syntaxTrees, err := parse.FromTokens(tokens)
 	if err != nil {
-		t.Fatalf("failed to run %s.%s: %v", mainPkgId, fnName, err)
+		log.Fatalf("failed to parse: %v", err)
+	}
+
+	err = analyze.PkgAnalyze(entryPkgInfo.Name, syntaxTrees)
+	if err != nil {
+		log.Fatalf("failed to analyze: %v", err)
+	}
+	semanticsTrees := analyze.GetAnalyzedPackages()
+
+	Setup()
+	for pkgName, semTree := range semanticsTrees {
+		err = LoadScript(pkgName, semTree)
+		if err != nil {
+			log.Fatalf("failed to load semanticsTree: %v", err)
+		}
+	}
+
+	returnValue, err := Interpret(entryPkgInfo.Name, "main")
+	if err != nil {
+		log.Fatalf("failed to run function: %s.main: %v", entryPkgInfo.Name, err)
 	}
 
 	assert.Equal(t, NewIntObject(0), returnValue)

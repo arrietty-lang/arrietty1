@@ -1,6 +1,10 @@
 package analyze
 
-import "github.com/x0y14/arrietty/parse"
+import (
+	"github.com/x0y14/arrietty/apm"
+	"github.com/x0y14/arrietty/parse"
+	"github.com/x0y14/arrietty/tokenize"
+)
 
 type TopLevel struct {
 	Kind    ToplevelKind
@@ -54,6 +58,27 @@ func newTopLevelComment(node *parse.Node) (*TopLevel, error) {
 }
 
 func newTopLevelImport(node *parse.Node) (*TopLevel, error) {
+
+	pkgName := node.S
+	paths, err := apm.GetArrFilePathsInPackage(pkgName)
+	if err != nil {
+		return nil, err
+	}
+
+	tokens, err := tokenize.FromPaths(paths)
+	if err != nil {
+		return nil, err
+	}
+
+	syntaxTrees, err := parse.FromTokens(tokens)
+	if err != nil {
+		return nil, err
+	}
+
+	err = PkgAnalyze(pkgName, syntaxTrees)
+	if err != nil {
+		return nil, err
+	}
 
 	return &TopLevel{
 		Kind:    TPImport,
