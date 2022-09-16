@@ -341,6 +341,31 @@ void main() { var a int; a = 1; var b int = 2; c := 3; }`,
 			},
 			nil,
 		},
+		{
+			"import, main, direct return",
+			"import \"pkg\"; void main() { return; }",
+			[]*Node{
+				NewNodeImport(
+					GenPosForTest(""),
+					"pkg"),
+				NewNodeFunctionDefine(
+					GenPosForTest(`import "pkg"; `),
+					NewNodeWithChildren(GenPosForTest(`import "pkg"; `), Void, nil),
+					NewNodeIdent(GenPosForTest(`import "pkg"; void `), "main"),
+					nil,
+					NewNodeWithChildren(
+						GenPosForTest(`import "pkg"; void main() `),
+						Block,
+						[]*Node{
+							NewNodeReturn(
+								GenPosForTest(`import "pkg"; void main() { `),
+								nil),
+						},
+					),
+				),
+			},
+			nil,
+		},
 	}
 
 	for _, tt := range tests {

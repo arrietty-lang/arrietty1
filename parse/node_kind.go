@@ -12,6 +12,8 @@ const (
 	While
 	For
 
+	Import
+
 	Not // !
 	Plus
 	Minus

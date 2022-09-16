@@ -149,7 +149,7 @@ func attachBuiltin() {
 	}
 
 	for _, builtin := range builtinFunc {
-		//symbolTable.Packages["builtin"].Functions[builtin.name] = builtin.f
+		//symbolTable.packages["builtin"].Functions[builtin.name] = builtin.f
 		funcDecl, err := builtinPkg.DeclareFunc(builtin.name)
 		if err != nil {
 			panic(err)

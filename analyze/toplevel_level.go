@@ -1,11 +1,16 @@
 package analyze
 
-import "github.com/x0y14/arrietty/parse"
+import (
+	"github.com/x0y14/arrietty/apm"
+	"github.com/x0y14/arrietty/parse"
+	"github.com/x0y14/arrietty/tokenize"
+)
 
 type TopLevel struct {
 	Kind    ToplevelKind
 	FuncDef *FuncDef
 	Comment *Comment
+	Import  *Import
 }
 
 func NewToplevel(node *parse.Node) (*TopLevel, error) {
@@ -14,6 +19,8 @@ func NewToplevel(node *parse.Node) (*TopLevel, error) {
 		return newTopLevelFuncDef(node)
 	case parse.Comment:
 		return newTopLevelComment(node)
+	case parse.Import:
+		return newTopLevelImport(node)
 	}
 
 	return nil, NewUnexpectNodeErr(node)
@@ -47,5 +54,36 @@ func newTopLevelComment(node *parse.Node) (*TopLevel, error) {
 		Kind:    TPComment,
 		FuncDef: nil,
 		Comment: NewComment(node.S),
+	}, nil
+}
+
+func newTopLevelImport(node *parse.Node) (*TopLevel, error) {
+
+	pkgName := node.S
+	paths, err := apm.GetArrFilePathsInPackage(pkgName)
+	if err != nil {
+		return nil, err
+	}
+
+	tokens, err := tokenize.FromPaths(paths)
+	if err != nil {
+		return nil, err
+	}
+
+	syntaxTrees, err := parse.FromTokens(tokens)
+	if err != nil {
+		return nil, err
+	}
+
+	err = PkgAnalyze(pkgName, syntaxTrees)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TopLevel{
+		Kind:    TPImport,
+		FuncDef: nil,
+		Comment: nil,
+		Import:  NewImport(node.S),
 	}, nil
 }

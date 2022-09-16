@@ -55,6 +55,18 @@ func toplevel() (*Node, error) {
 		return NewNodeComment(c_.Pos, c_.S), nil
 	}
 
+	if imp_ := consumeIdent("import"); imp_ != nil {
+		pkgNameNode, err := expect(tokenize.String)
+		if err != nil {
+			return nil, err
+		}
+		_, err = expect(tokenize.Semi)
+		if err != nil {
+			return nil, err
+		}
+		return NewNodeImport(imp_.Pos, pkgNameNode.S), nil
+	}
+
 	retType, err := types()
 	if err != nil {
 		return nil, err
@@ -785,4 +797,16 @@ func kv() (*Node, error) {
 func Parse(tok *tokenize.Token) ([]*Node, error) {
 	token = tok
 	return program()
+}
+
+func FromTokens(someTokens []*tokenize.Token) ([][]*Node, error) {
+	var syntaxTrees [][]*Node
+	for _, t := range someTokens {
+		syntaxTree, err := Parse(t)
+		if err != nil {
+			return nil, err
+		}
+		syntaxTrees = append(syntaxTrees, syntaxTree)
+	}
+	return syntaxTrees, nil
 }
