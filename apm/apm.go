@@ -1,6 +1,7 @@
 package apm
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -123,4 +124,32 @@ func GetArrFilePathsInCurrent(root string) ([]string, error) {
 	})
 
 	return arrFiles, err
+}
+
+func FileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
+}
+
+// InitPackage `go mod init ...`のようなパッケージ初期化コマンドに使用
+func InitPackage(root string, packageName string) error {
+	// すでにpkg.jsonが存在していないかを確認
+	pkgJsonPath := filepath.Join(root, "pkg.json")
+	if FileExists(pkgJsonPath) {
+		return fmt.Errorf("pkg.json already exists: %v", pkgJsonPath)
+	}
+
+	pkg := PkgInfo{
+		Name:    packageName,
+		Version: "0.0.1",
+		Deps:    make([]Dependencies, 0),
+	}
+
+	bytes, err := json.MarshalIndent(pkg, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(pkgJsonPath, bytes, 0644)
+	return err
 }

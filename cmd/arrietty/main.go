@@ -14,63 +14,81 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	if len(args) >= 2 {
+	if len(args) != 2 {
 		log.Fatalf("too many args")
 	}
 
-	entryArr := args[0]
-	if !strings.HasSuffix(entryArr, ".arr") {
-		log.Fatalf("Please specify the path of the file ending with .arr")
-	}
-	entryArrAbs, err := filepath.Abs(entryArr)
-	if err != nil {
-		log.Fatalf("failed to absoluting: %v", err)
-	}
-	pkgDirOfEntryArr := filepath.Dir(entryArrAbs)
-	entryPkgInfo, err := apm.GetCurrentPackageInfo(pkgDirOfEntryArr)
-	if err != nil {
-		log.Fatalf("failed to read pkg.json: %v", err)
-	}
-	entryPkgArrs, err := apm.GetArrFilePathsInCurrent(pkgDirOfEntryArr)
-	if err != nil {
-		log.Fatalf("failed to get .arr files: %v", err)
-	}
+	// args[0]は動作指定
+	// args[1]はパラメータ
 
-	// todo : check Is entryPackage's dependencies installed?
-	// todo : pkg installer
-	// todo : & Is same version?
-	// todo : pkg updater
+	switch args[0] {
+	case "run":
+		// プログラム実行
 
-	tokens, err := tokenize.FromPaths(entryPkgArrs)
-	if err != nil {
-		log.Fatalf("failed to tokenize: %v", err)
-	}
-
-	syntaxTrees, err := parse.FromTokens(tokens)
-	if err != nil {
-		log.Fatalf("failed to parse: %v", err)
-	}
-
-	err = analyze.PkgAnalyze(entryPkgInfo.Name, syntaxTrees)
-	if err != nil {
-		log.Fatalf("failed t analyze: %v", err)
-	}
-	semanticsTrees := analyze.GetAnalyzedPackages()
-
-	interpret.Setup()
-	for pkgName, semTree := range semanticsTrees {
-		err = interpret.LoadScript(pkgName, semTree)
-		if err != nil {
-			log.Fatalf("failed to load semanticsTree: %v", err)
+		entryArr := args[1]
+		if !strings.HasSuffix(entryArr, ".arr") {
+			log.Fatalf("Please specify the path of the file ending with .arr")
 		}
-	}
+		entryArrAbs, err := filepath.Abs(entryArr)
+		if err != nil {
+			log.Fatalf("failed to absoluting: %v", err)
+		}
+		pkgDirOfEntryArr := filepath.Dir(entryArrAbs)
+		entryPkgInfo, err := apm.GetCurrentPackageInfo(pkgDirOfEntryArr)
+		if err != nil {
+			log.Fatalf("failed to read pkg.json: %v", err)
+		}
+		entryPkgArrs, err := apm.GetArrFilePathsInCurrent(pkgDirOfEntryArr)
+		if err != nil {
+			log.Fatalf("failed to get .arr files: %v", err)
+		}
 
-	returnValue, err := interpret.Interpret(entryPkgInfo.Name, "main")
-	if err != nil {
-		log.Fatalf("failed to run function: %s.main: %v", entryPkgInfo.Name, err)
-	}
+		// todo : check Is entryPackage's dependencies installed?
+		// todo : pkg installer
+		// todo : & Is same version?
+		// todo : pkg updater
 
-	if returnValue != nil && returnValue.Kind == interpret.OInt {
-		os.Exit(returnValue.I)
+		tokens, err := tokenize.FromPaths(entryPkgArrs)
+		if err != nil {
+			log.Fatalf("failed to tokenize: %v", err)
+		}
+
+		syntaxTrees, err := parse.FromTokens(tokens)
+		if err != nil {
+			log.Fatalf("failed to parse: %v", err)
+		}
+
+		err = analyze.PkgAnalyze(entryPkgInfo.Name, syntaxTrees)
+		if err != nil {
+			log.Fatalf("failed t analyze: %v", err)
+		}
+		semanticsTrees := analyze.GetAnalyzedPackages()
+
+		interpret.Setup()
+		for pkgName, semTree := range semanticsTrees {
+			err = interpret.LoadScript(pkgName, semTree)
+			if err != nil {
+				log.Fatalf("failed to load semanticsTree: %v", err)
+			}
+		}
+
+		returnValue, err := interpret.Interpret(entryPkgInfo.Name, "main")
+		if err != nil {
+			log.Fatalf("failed to run function: %s.main: %v", entryPkgInfo.Name, err)
+		}
+
+		if returnValue != nil && returnValue.Kind == interpret.OInt {
+			os.Exit(returnValue.I)
+		}
+	case "init":
+		// パッケージ初期化
+		root, err := os.Getwd()
+		if err != nil {
+			log.Fatalf("failed to get working directory: %v", err)
+		}
+		err = apm.InitPackage(root, args[1])
+		if err != nil {
+			log.Fatalf("failed to initialize package: %v", err)
+		}
 	}
 }
